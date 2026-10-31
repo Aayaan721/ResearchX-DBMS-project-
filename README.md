@@ -69,9 +69,13 @@ dbms_mini_project/
 ├── scripts/
 │   ├── generate_seed_embeddings.mjs     # Indexes seed records into pgvector
 │   ├── test_platform.mjs                # Automated 13-step integration test suite
+│   ├── test_transaction_rollback.mjs    # Multi-statement transaction rollback & integrity tests
+│   ├── verify_browser_and_screenshots.mjs # Browser UI verification & screenshot automation
+│   ├── capture_sql_screenshots.mjs      # Terminal-grade SQL execution screenshot generator
 │   └── generate_evidence.mjs            # Dumps verifiable outputs to docs/evidence/
 ├── docs/
 │   └── evidence/                        # Real query outputs & test execution logs
+│       └── screenshots/                 # 13 genuine UI & SQL execution screenshots
 ├── next.config.js                       # External packages config for ONNX runtime
 ├── tailwind.config.js                   # Modern styling theme
 ├── package.json                         # Dependencies & run scripts
@@ -141,19 +145,43 @@ Open **[http://localhost:3000](http://localhost:3000)** in your browser.
 
 ## 5. Verification & Test Execution
 
-Run the automated 13-step test suite against the live platform:
+### 1. Automated Integration Test Suite (13 Endpoints & Workflows)
+Run the automated test suite against the live platform:
 ```powershell
 node scripts/test_platform.mjs
 ```
 
-Run university DBMS evaluation queries (GROUP BY, aggregates, correlated subqueries, multi-table joins):
+### 2. ACID Transaction Atomicity & Controlled Rollback
+Execute the multi-statement constraint violation and authorization guard rollback verification:
+```powershell
+node scripts/test_transaction_rollback.mjs
+```
+
+### 3. Browser UI Automation & Verification
+Run the end-to-end browser workflows in headless Chrome:
+```powershell
+node scripts/verify_browser_and_screenshots.mjs
+```
+
+### 4. University Relational DBMS Evaluation Queries
+Execute 7.1 to 7.6 (GROUP BY, HAVING, correlated subqueries, multi-table JOINs):
 ```powershell
 psql -U postgres -d researchx -f "database/queries.sql"
 ```
 
-Run vector cosine similarity demonstration:
-```powershell
-node scripts/generate_evidence.mjs
-```
+### 5. Evidence & Screenshots Manifest
+Genuine execution logs are saved in `docs/evidence/` and all 13 verified screenshots are in `docs/evidence/screenshots/`:
+- `01_dashboard.png`: Live system metrics, domain distribution, and trigger audit trail
+- `02_projects_listing.png`: Projects catalog with search, domain filtering, and status pills
+- `03_project_submission_form.png`: Student project submission form with domain tags
+- `04_project_details_and_review.png`: Project details, 1-click similarity results, and faculty review panel
+- `05_project_edit_persistence.png`: Project editing form and persistence verification
+- `06_openalex_search.png`: Live OpenAlex academic literature search with DOI/PDF links
+- `07_saved_papers.png`: Saved research papers and multi-author relational catalog
+- `08_similarity_search.png`: pgvector semantic cosine similarity ranking engine
+- `09_sql_table_data_and_counts.png`: Relational schema table counts and user accounts SQL
+- `10_sql_joins_and_subqueries.png`: Relational queries 7.1, 7.4, and 7.6 execution proof
+- `11_sql_stored_procedures_and_triggers.png`: Stored procedures & trigger audit log execution
+- `12_sql_pgvector_cosine_similarity.png`: pgvector HNSW vector index definition and cosine query
+- `13_sql_transaction_rollback.png`: Multi-statement transaction rollback under failure proof
 
-Verifiable test output files are saved in `docs/evidence/`.

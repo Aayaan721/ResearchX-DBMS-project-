@@ -187,3 +187,35 @@ BEGIN
         (SELECT COUNT(*) FROM embedding_ref) AS total_embeddings;
 END;
 $$ LANGUAGE plpgsql;
+
+-- ----------------------------------------------------------------------------
+-- 6. Trigger Function: Cascade Delete for Polymorphic embedding_ref
+-- Ensures zero orphan vectors when a project or research_paper is deleted directly.
+-- ----------------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION fn_trg_cascade_delete_embeddings()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF (TG_TABLE_NAME = 'project') THEN
+        DELETE FROM embedding_ref 
+        WHERE entity_type = 'PROJECT' AND entity_id = OLD.project_id;
+        RETURN OLD;
+    ELSIF (TG_TABLE_NAME = 'research_paper') THEN
+        DELETE FROM embedding_ref 
+        WHERE entity_type = 'RESEARCH_PAPER' AND entity_id = OLD.paper_id;
+        RETURN OLD;
+    END IF;
+    RETURN OLD;
+END;
+$$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS trg_cascade_project_embeddings ON project;
+CREATE TRIGGER trg_cascade_project_embeddings
+BEFORE DELETE ON project
+FOR EACH ROW
+EXECUTE FUNCTION fn_trg_cascade_delete_embeddings();
+
+DROP TRIGGER IF EXISTS trg_cascade_paper_embeddings ON research_paper;
+CREATE TRIGGER trg_cascade_paper_embeddings
+BEFORE DELETE ON research_paper
+FOR EACH ROW
+EXECUTE FUNCTION fn_trg_cascade_delete_embeddings();
