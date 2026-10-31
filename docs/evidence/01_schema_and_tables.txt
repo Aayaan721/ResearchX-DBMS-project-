@@ -1,0 +1,110 @@
+=== RESEARCHX POSTGRESQL 16 + PGVECTOR SCHEMA DEFINITIONS ===
+
+TABLE LIST:
+[
+  "app_user",
+  "audit_log",
+  "author",
+  "domain",
+  "embedding_ref",
+  "paper_author",
+  "project",
+  "project_domain",
+  "project_review",
+  "research_paper",
+  "role"
+]
+
+--- TABLE: role ---
+  role_id              smallint             NULLABLE: NO  DEFAULT: NONE
+  role_name            character varying    NULLABLE: NO  DEFAULT: NONE
+
+--- TABLE: app_user ---
+  user_id              integer              NULLABLE: NO  DEFAULT: nextval('app_user_user_id_seq'::regclass)
+  username             character varying    NULLABLE: NO  DEFAULT: NONE
+  password_hash        character varying    NULLABLE: NO  DEFAULT: NONE
+  full_name            character varying    NULLABLE: NO  DEFAULT: NONE
+  email                character varying    NULLABLE: NO  DEFAULT: NONE
+  role_id              smallint             NULLABLE: NO  DEFAULT: NONE
+  created_at           timestamp without time zone NULLABLE: NO  DEFAULT: now()
+
+--- TABLE: domain ---
+  domain_id            integer              NULLABLE: NO  DEFAULT: nextval('domain_domain_id_seq'::regclass)
+  domain_name          character varying    NULLABLE: NO  DEFAULT: NONE
+  description          text                 NULLABLE: YES  DEFAULT: NONE
+
+--- TABLE: project ---
+  project_id           integer              NULLABLE: NO  DEFAULT: nextval('project_project_id_seq'::regclass)
+  student_id           integer              NULLABLE: NO  DEFAULT: NONE
+  title                character varying    NULLABLE: NO  DEFAULT: NONE
+  problem_statement    text                 NULLABLE: NO  DEFAULT: NONE
+  description          text                 NULLABLE: YES  DEFAULT: NONE
+  status               character varying    NULLABLE: NO  DEFAULT: 'Pending'::character varying
+  approved_by          integer              NULLABLE: YES  DEFAULT: NONE
+  created_at           timestamp without time zone NULLABLE: NO  DEFAULT: now()
+  updated_at           timestamp without time zone NULLABLE: NO  DEFAULT: now()
+
+--- TABLE: project_domain ---
+  project_id           integer              NULLABLE: NO  DEFAULT: NONE
+  domain_id            integer              NULLABLE: NO  DEFAULT: NONE
+
+--- TABLE: research_paper ---
+  paper_id             integer              NULLABLE: NO  DEFAULT: nextval('research_paper_paper_id_seq'::regclass)
+  openalex_id          character varying    NULLABLE: YES  DEFAULT: NONE
+  title                character varying    NULLABLE: NO  DEFAULT: NONE
+  abstract             text                 NULLABLE: YES  DEFAULT: NONE
+  keywords             text                 NULLABLE: YES  DEFAULT: NONE
+  doi                  character varying    NULLABLE: YES  DEFAULT: NONE
+  file_url             character varying    NULLABLE: YES  DEFAULT: NONE
+  published_in         character varying    NULLABLE: YES  DEFAULT: NONE
+  year                 smallint             NULLABLE: YES  DEFAULT: NONE
+  cited_by_count       integer              NULLABLE: NO  DEFAULT: 0
+  created_at           timestamp without time zone NULLABLE: NO  DEFAULT: now()
+
+--- TABLE: author ---
+  author_id            integer              NULLABLE: NO  DEFAULT: nextval('author_author_id_seq'::regclass)
+  name                 character varying    NULLABLE: NO  DEFAULT: NONE
+  affiliation          character varying    NULLABLE: YES  DEFAULT: NONE
+  email                character varying    NULLABLE: YES  DEFAULT: NONE
+
+--- TABLE: paper_author ---
+  paper_id             integer              NULLABLE: NO  DEFAULT: NONE
+  author_id            integer              NULLABLE: NO  DEFAULT: NONE
+  author_order         smallint             NULLABLE: NO  DEFAULT: 1
+
+--- TABLE: project_review ---
+  review_id            integer              NULLABLE: NO  DEFAULT: nextval('project_review_review_id_seq'::regclass)
+  project_id           integer              NULLABLE: NO  DEFAULT: NONE
+  faculty_id           integer              NULLABLE: NO  DEFAULT: NONE
+  decision             character varying    NULLABLE: NO  DEFAULT: NONE
+  comments             text                 NULLABLE: YES  DEFAULT: NONE
+  review_date          timestamp without time zone NULLABLE: NO  DEFAULT: now()
+
+--- TABLE: audit_log ---
+  log_id               integer              NULLABLE: NO  DEFAULT: nextval('audit_log_log_id_seq'::regclass)
+  table_name           character varying    NULLABLE: NO  DEFAULT: NONE
+  action               character varying    NULLABLE: NO  DEFAULT: NONE
+  record_id            integer              NULLABLE: NO  DEFAULT: NONE
+  old_values           jsonb                NULLABLE: YES  DEFAULT: NONE
+  new_values           jsonb                NULLABLE: YES  DEFAULT: NONE
+  changed_at           timestamp without time zone NULLABLE: NO  DEFAULT: now()
+
+--- TABLE: embedding_ref ---
+  embedding_id         integer              NULLABLE: NO  DEFAULT: nextval('embedding_ref_embedding_id_seq'::regclass)
+  entity_type          character varying    NULLABLE: NO  DEFAULT: NONE
+  entity_id            integer              NULLABLE: NO  DEFAULT: NONE
+  embedding            USER-DEFINED         NULLABLE: NO  DEFAULT: NONE
+  model                character varying    NULLABLE: NO  DEFAULT: 'Xenova/all-MiniLM-L6-v2'::character varying
+  created_at           timestamp without time zone NULLABLE: NO  DEFAULT: now()
+
+INSTALLED EXTENSIONS:
+[
+  {
+    "extname": "plpgsql",
+    "extversion": "1.0"
+  },
+  {
+    "extname": "vector",
+    "extversion": "0.8.6"
+  }
+]

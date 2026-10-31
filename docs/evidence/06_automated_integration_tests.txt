@@ -1,0 +1,24 @@
+====================================================
+ ResearchX Automated Platform & DBMS Verification
+====================================================
+
+Testing: GET /api/stats (Platform statistics & domains)... PASSED [OK]
+Testing: GET /api/users (Demo students and faculty)... PASSED [OK]
+Testing: GET /api/domains (Research taxonomy)... PASSED [OK]
+Testing: GET /api/projects (Filter and list)... PASSED [OK]
+Testing: POST /api/projects (Insert project and generate 384-d pgvector embedding)... PASSED [OK]
+Testing: GET /api/projects/:id (Fetch created project & trigger audit)... PASSED [OK]
+Testing: POST /api/projects/:id/review (Execute sp_review_and_approve_project)... PASSED [OK]
+Testing: GET /api/openalex/search (Query real OpenAlex academic works)... PASSED [OK]
+Testing: POST /api/openalex/save (Save paper, authors & generate 384-d pgvector)... PASSED [OK]
+Testing: GET /api/papers (Verify saved paper in PostgreSQL)... PASSED [OK]
+Testing: POST /api/similarity (Run real pgvector cosine distance search)... 
+      [Top match: "ResearchX: Intelligent Research Discovery & Project Similarity Platform" | Score: 53.9%]
+PASSED [OK]
+Testing: DELETE /api/projects/:id (Clean up test project & check CASCADE)... PASSED [OK]
+Testing: DELETE /api/papers/:id (Clean up test paper)... PASSED [OK]
+
+====================================================
+ Summary: 13 PASSED, 0 FAILED
+====================================================
+

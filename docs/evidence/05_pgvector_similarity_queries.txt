@@ -1,0 +1,62 @@
+=== PGVECTOR COSINE SIMILARITY SEARCH DEMONSTRATION ===
+
+Cosine similarity to Project #1 ("ResearchX: Intelligent Research Discovery & Project Similarity Platform"):
+[
+  {
+    "entity_type": "PROJECT",
+    "entity_id": 5,
+    "title": "GraphDB-Scale: Distributed Graph Processing Engine for Citation Networks",
+    "cosine_similarity": "0.3515",
+    "qualitative_alignment": "Moderate Alignment"
+  },
+  {
+    "entity_type": "PROJECT",
+    "entity_id": 2,
+    "title": "BioMedQA: Clinical Question Answering Using Dense Passage Retrieval",
+    "cosine_similarity": "0.3504",
+    "qualitative_alignment": "Moderate Alignment"
+  },
+  {
+    "entity_type": "RESEARCH_PAPER",
+    "entity_id": 1,
+    "title": "Sentence-BERT: Sentence Embeddings using Siamese BERT-Networks",
+    "cosine_similarity": "0.2990",
+    "qualitative_alignment": "Low Similarity"
+  },
+  {
+    "entity_type": "RESEARCH_PAPER",
+    "entity_id": 3,
+    "title": "Efficient and Robust Approximate Nearest Neighbor Search Using Hierarchical Navigable Small World Graphs",
+    "cosine_similarity": "0.2856",
+    "qualitative_alignment": "Low Similarity"
+  },
+  {
+    "entity_type": "RESEARCH_PAPER",
+    "entity_id": 2,
+    "title": "Dense Passage Retrieval for Open-Domain Question Answering",
+    "cosine_similarity": "0.2778",
+    "qualitative_alignment": "Low Similarity"
+  },
+  {
+    "entity_type": "PROJECT",
+    "entity_id": 6,
+    "title": "CodeSummarizer: Neural Code Understanding and Documentation Generation",
+    "cosine_similarity": "0.2253",
+    "qualitative_alignment": "Low Similarity"
+  },
+  {
+    "entity_type": "RESEARCH_PAPER",
+    "entity_id": 4,
+    "title": "Federated Learning: Challenges, Methods, and Future Directions",
+    "cosine_similarity": "0.1081",
+    "qualitative_alignment": "Low Similarity"
+  },
+  {
+    "entity_type": "PROJECT",
+    "entity_id": 4,
+    "title": "PrivacyGuard: Differential Privacy in Collaborative Federated Learning",
+    "cosine_similarity": "0.0939",
+    "qualitative_alignment": "Low Similarity"
+  }
+]
+

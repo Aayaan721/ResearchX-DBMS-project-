@@ -1,0 +1,13 @@
+=== RESEARCHX TABLE RECORD COUNTS ===
+
+role                 : 3 rows
+app_user             : 5 rows
+domain               : 6 rows
+project              : 7 rows
+project_domain       : 14 rows
+research_paper       : 6 rows
+author               : 10 rows
+paper_author         : 10 rows
+project_review       : 5 rows
+audit_log            : 14 rows
+embedding_ref        : 11 rows

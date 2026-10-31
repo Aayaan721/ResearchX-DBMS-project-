@@ -1,0 +1,26 @@
+=== NEXT.JS LIVE HTTP PAGE RESPONSE EVIDENCE ===
+
+ENDPOINT: / | STATUS: 200 | LENGTH: 27660 bytes
+SNIPPET:
+<!DOCTYPE html><html lang="en" class="dark"><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="/_next/static/css/14c82ecff27e038f.css" data-precedence="next"/><link rel="preload" as="script" fetchPriority="low" href="/_next/...
+
+ENDPOINT: /projects | STATUS: 200 | LENGTH: 16955 bytes
+SNIPPET:
+<!DOCTYPE html><html lang="en" class="dark"><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="/_next/static/css/14c82ecff27e038f.css" data-precedence="next"/><link rel="preload" as="script" fetchPriority="low" href="/_next/...
+
+ENDPOINT: /discover | STATUS: 200 | LENGTH: 21263 bytes
+SNIPPET:
+<!DOCTYPE html><html lang="en" class="dark"><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="/_next/static/css/14c82ecff27e038f.css" data-precedence="next"/><link rel="preload" as="script" fetchPriority="low" href="/_next/...
+
+ENDPOINT: /papers | STATUS: 200 | LENGTH: 19139 bytes
+SNIPPET:
+<!DOCTYPE html><html lang="en" class="dark"><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="/_next/static/css/14c82ecff27e038f.css" data-precedence="next"/><link rel="preload" as="script" fetchPriority="low" href="/_next/...
+
+ENDPOINT: /similarity | STATUS: 200 | LENGTH: 20801 bytes
+SNIPPET:
+<!DOCTYPE html><html lang="en" class="dark"><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="/_next/static/css/14c82ecff27e038f.css" data-precedence="next"/><link rel="preload" as="script" fetchPriority="low" href="/_next/...
+
+ENDPOINT: /api/stats | STATUS: 200 | LENGTH: 3016 bytes
+SNIPPET:
+{"stats":{"total_projects":7,"approved_projects":4,"pending_projects":2,"rejected_projects":1,"total_papers":6,"total_authors":10,"total_embeddings":11},"domains":[{"domain_id":1,"domain_name":"Artificial Intelligence & Machine Learning","description":"Core deep learning architectures, representatio...
+

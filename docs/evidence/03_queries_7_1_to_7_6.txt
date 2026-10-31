@@ -1,0 +1,42 @@
+ domain_id |                domain_name                 | total_projects | approved_projects | pending_projects | avg_problem_statement_chars 
+-----------+--------------------------------------------+----------------+-------------------+------------------+-----------------------------
+         1 | Artificial Intelligence & Machine Learning |              6 |                 3 |                2 |                      133.17
+         3 | Database Systems & Vector Retrieval        |              3 |                 2 |                1 |                      129.00
+         2 | Natural Language Processing & LLMs         |              2 |                 1 |                0 |                      144.00
+         6 | Cloud & Distributed Systems                |              1 |                 1 |                0 |                      148.00
+         4 | Computer Vision & Multimodal AI            |              1 |                 1 |                0 |                      136.00
+         5 | Cybersecurity & Data Privacy               |              1 |                 0 |                1 |                      136.00
+(6 rows)
+
+ year | papers_published | total_citations | avg_citations_per_paper | max_citations 
+------+------------------+-----------------+-------------------------+---------------
+ 2024 |                1 |              42 |                   42.00 |            42
+ 2020 |                3 |            7440 |                 2480.00 |          3100
+ 2019 |                1 |            7850 |                 7850.00 |          7850
+ 2017 |                1 |          112000 |               112000.00 |        112000
+(4 rows)
+
+UPDATE 1
+DELETE 0
+ paper_id |                                                  title                                                   | year | cited_by_count | cohort_avg_citations 
+----------+----------------------------------------------------------------------------------------------------------+------+----------------+----------------------
+        3 | Efficient and Robust Approximate Nearest Neighbor Search Using Hierarchical Navigable Small World Graphs | 2020 |           3100 |              2480.00
+(1 row)
+
+ user_id | username |   full_name    |        email         
+---------+----------+----------------+----------------------
+       2 | aayaan_s | Aayaan S       | aayaan@researchx.edu
+       3 | priya_k  | Priya Kulkarni | priya@researchx.edu
+(2 rows)
+
+ project_id |                                  title                                   |  status  |  student_name  |    student_email     |                                     domains                                     | reviewed_by_faculty | review_decision |                                     review_comments                                     |  vector_status  |         created_at         
+------------+--------------------------------------------------------------------------+----------+----------------+----------------------+---------------------------------------------------------------------------------+---------------------+-----------------+-----------------------------------------------------------------------------------------+-----------------+----------------------------
+          1 | ResearchX: Intelligent Research Discovery & Project Similarity Platform  | Approved | Aayaan S       | aayaan@researchx.edu | Artificial Intelligence & Machine Learning, Database Systems & Vector Retrieval | Dr. Shilpa S        | Approved        | Strong relational schema with pgvector integration. Approved for implementation.        | Indexed (384-d) | 2026-10-31 21:02:07.465657
+          2 | BioMedQA: Clinical Question Answering Using Dense Passage Retrieval      | Approved | Priya Kulkarni | priya@researchx.edu  | Artificial Intelligence & Machine Learning, Natural Language Processing & LLMs  | Dr. Shilpa S        | Approved        | Clear biomedical retrieval methodology. Approved for pilot evaluation.                  | Indexed (384-d) | 2026-10-31 21:02:07.465657
+          3 | EdgeVision: Low-Power Object Detection on Microcontrollers               | Approved | Aayaan S       | aayaan@researchx.edu | Artificial Intelligence & Machine Learning, Computer Vision & Multimodal AI     | Dr. Shilpa S        | Approved        | Edge vision model quantization strategy verified by faculty.                            | Indexed (384-d) | 2026-10-31 21:02:07.465657
+          4 | PrivacyGuard: Differential Privacy in Collaborative Federated Learning   | Pending  | Priya Kulkarni | priya@researchx.edu  | Artificial Intelligence & Machine Learning, Cybersecurity & Data Privacy        |                     |                 |                                                                                         | Indexed (384-d) | 2026-10-31 21:02:07.465657
+          5 | GraphDB-Scale: Distributed Graph Processing Engine for Citation Networks | Approved | Aayaan S       | aayaan@researchx.edu | Cloud & Distributed Systems, Database Systems & Vector Retrieval                | Prof. Sandesh B J   | Approved        | Partitioning scheme looks mathematically sound. Approved.                               | Indexed (384-d) | 2026-10-31 21:02:07.465657
+          6 | CodeSummarizer: Neural Code Understanding and Documentation Generation   | Rejected | Priya Kulkarni | priya@researchx.edu  | Artificial Intelligence & Machine Learning, Natural Language Processing & LLMs  | Prof. Sandesh B J   | Rejected        | Insufficient novelty in code docstring synthesis. Expand to multi-language translation. | Indexed (384-d) | 2026-10-31 21:02:07.465657
+          7 | AutoIndex: Dynamic Vector Clustering for Multi-Tenant Databases          | Pending  | Aayaan S       | aayaan@researchx.edu | Artificial Intelligence & Machine Learning, Database Systems & Vector Retrieval |                     |                 |                                                                                         | Pending Vector  | 2026-10-31 21:17:42.015627
+(7 rows)
+

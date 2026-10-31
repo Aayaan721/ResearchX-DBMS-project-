@@ -1,0 +1,154 @@
+=== STORED PROCEDURE & TRIGGER AUDIT VERIFICATION ===
+
+TRIGGERS IN DATABASE:
+[
+  {
+    "trigger_name": "trg_audit_project_changes",
+    "event_manipulation": "INSERT",
+    "event_object_table": "project",
+    "action_statement": "EXECUTE FUNCTION fn_trg_audit_project_changes()"
+  },
+  {
+    "trigger_name": "trg_audit_project_changes",
+    "event_manipulation": "DELETE",
+    "event_object_table": "project",
+    "action_statement": "EXECUTE FUNCTION fn_trg_audit_project_changes()"
+  },
+  {
+    "trigger_name": "trg_audit_project_changes",
+    "event_manipulation": "UPDATE",
+    "event_object_table": "project",
+    "action_statement": "EXECUTE FUNCTION fn_trg_audit_project_changes()"
+  },
+  {
+    "trigger_name": "trg_project_timestamp",
+    "event_manipulation": "UPDATE",
+    "event_object_table": "project",
+    "action_statement": "EXECUTE FUNCTION fn_trg_project_timestamp()"
+  }
+]
+
+RECENT AUDIT LOG ENTRIES CAPTURED BY TRIGGER:
+[
+  {
+    "log_id": 14,
+    "table_name": "project",
+    "action": "DELETE",
+    "record_id": 9,
+    "old_values": {
+      "title": "AutoIndex: Dynamic Vector Clustering for Multi-Tenant Databases",
+      "status": "Approved",
+      "student_id": 2
+    },
+    "new_values": null,
+    "changed_at": "2026-10-31T15:54:50.211Z"
+  },
+  {
+    "log_id": 13,
+    "table_name": "project",
+    "action": "UPDATE",
+    "record_id": 9,
+    "old_values": {
+      "title": "AutoIndex: Dynamic Vector Clustering for Multi-Tenant Databases",
+      "status": "Pending",
+      "updated_at": "2026-10-31T21:24:50.087673",
+      "approved_by": null
+    },
+    "new_values": {
+      "title": "AutoIndex: Dynamic Vector Clustering for Multi-Tenant Databases",
+      "status": "Approved",
+      "updated_at": "2026-10-31T21:24:50.135788",
+      "approved_by": 4
+    },
+    "changed_at": "2026-10-31T15:54:50.135Z"
+  },
+  {
+    "log_id": 12,
+    "table_name": "project",
+    "action": "INSERT",
+    "record_id": 9,
+    "old_values": null,
+    "new_values": {
+      "title": "AutoIndex: Dynamic Vector Clustering for Multi-Tenant Databases",
+      "status": "Pending",
+      "student_id": 2
+    },
+    "changed_at": "2026-10-31T15:54:50.087Z"
+  },
+  {
+    "log_id": 11,
+    "table_name": "project",
+    "action": "DELETE",
+    "record_id": 8,
+    "old_values": {
+      "title": "AutoIndex: Dynamic Vector Clustering for Multi-Tenant Databases",
+      "status": "Approved",
+      "student_id": 2
+    },
+    "new_values": null,
+    "changed_at": "2026-10-31T15:54:28.093Z"
+  },
+  {
+    "log_id": 10,
+    "table_name": "project",
+    "action": "UPDATE",
+    "record_id": 8,
+    "old_values": {
+      "title": "AutoIndex: Dynamic Vector Clustering for Multi-Tenant Databases",
+      "status": "Pending",
+      "updated_at": "2026-10-31T21:24:25.67156",
+      "approved_by": null
+    },
+    "new_values": {
+      "title": "AutoIndex: Dynamic Vector Clustering for Multi-Tenant Databases",
+      "status": "Approved",
+      "updated_at": "2026-10-31T21:24:26.32647",
+      "approved_by": 4
+    },
+    "changed_at": "2026-10-31T15:54:26.326Z"
+  }
+]
+
+FACULTY REVIEWS RECORDED VIA PROCEDURE sp_review_and_approve_project:
+[
+  {
+    "review_id": 5,
+    "project_id": 3,
+    "faculty_name": "Dr. Shilpa S",
+    "decision": "Approved",
+    "comments": "Edge vision model quantization strategy verified by faculty.",
+    "review_date": "2026-10-31T15:33:03.518Z"
+  },
+  {
+    "review_id": 4,
+    "project_id": 6,
+    "faculty_name": "Prof. Sandesh B J",
+    "decision": "Rejected",
+    "comments": "Insufficient novelty in code docstring synthesis. Expand to multi-language translation.",
+    "review_date": "2026-10-30T15:32:07.494Z"
+  },
+  {
+    "review_id": 3,
+    "project_id": 5,
+    "faculty_name": "Prof. Sandesh B J",
+    "decision": "Approved",
+    "comments": "Partitioning scheme looks mathematically sound. Approved.",
+    "review_date": "2026-10-29T15:32:07.494Z"
+  },
+  {
+    "review_id": 2,
+    "project_id": 2,
+    "faculty_name": "Dr. Shilpa S",
+    "decision": "Approved",
+    "comments": "Clear biomedical retrieval methodology. Approved for pilot evaluation.",
+    "review_date": "2026-10-28T15:32:07.494Z"
+  },
+  {
+    "review_id": 1,
+    "project_id": 1,
+    "faculty_name": "Dr. Shilpa S",
+    "decision": "Approved",
+    "comments": "Strong relational schema with pgvector integration. Approved for implementation.",
+    "review_date": "2026-10-26T15:32:07.494Z"
+  }
+]
