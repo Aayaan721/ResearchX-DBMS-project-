@@ -42,6 +42,8 @@ export async function POST(
     });
   } catch (error: any) {
     console.error('Error reviewing project via stored procedure:', error);
-    return NextResponse.json({ error: error.message || 'Review procedure failed' }, { status: 500 });
+    const msg = error.message || 'Review procedure failed';
+    const status = msg.includes('not authorized') ? 403 : msg.includes('does not exist') ? 404 : 400;
+    return NextResponse.json({ error: msg }, { status });
   }
 }

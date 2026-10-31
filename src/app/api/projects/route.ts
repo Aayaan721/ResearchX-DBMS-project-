@@ -78,69 +78,67 @@ export async function POST(request: NextRequest) {
     const { title, problem_statement, description, student_id, domain_ids } = body;
 
     // Validation
-    if (!title || !title.trim()) {
+    if (!title || typeof title !== 'string' || !title.trim()) {
       return NextResponse.json({ error: 'Project title is required' }, { status: 400 });
     }
-    if (!problem_statement || !problem_statement.trim()) {
-      return NextResponse.json({ error: 'Problem statement is required' }, { status: 400 });
+    if (title.trim().length > 255) {
+      return NextResponse.json({ error: 'Project title must not exceed 255 characters' }, { status: 400 });
     }
-    if (!student_id) {
-      return NextResponse.json({ error: 'Student owner selection is required' }, { status: 400 });
+    if (!problem_statement || typeof problem_statement !== 'string' || problem_statement.trim().length < 10) {
+      return NextResponse.json({ error: 'Problem statement must be at least 10 characters long' }, { status: 400 });
     }
+    const studentIdNum = parseInt(String(student_id), 10);
+    if (!studentIdNum || isNaN(studentIdNum)) {
+      return NextResponse.json({ error: 'A valid student author is required' }, { status: 400 });
+    }
+
+    // 1. Generate 384-dimensional dense vector BEFORE transaction commit
+    const textToEmbed = `${title.trim()}. ${problem_statement.trim()}. ${(description || '').trim()}`;
+    const rawVector = await generateEmbedding(textToEmbed);
+    const vectorStr = formatVectorForPg(rawVector);
 
     await client.query('BEGIN');
 
-    // 1. Insert Project
+    // 2. Insert Project
     const insertProjRes = await client.query(
       `INSERT INTO project (student_id, title, problem_statement, description, status)
        VALUES ($1, $2, $3, $4, 'Pending')
        RETURNING project_id, title, status, created_at`,
-      [student_id, title.trim(), problem_statement.trim(), (description || '').trim()]
+      [studentIdNum, title.trim(), problem_statement.trim(), (description || '').trim()]
     );
     const newProject = insertProjRes.rows[0];
-    const projectId = newProject.project_id;
+    const projectId: number = newProject.project_id;
 
-    // 2. Insert Domain Mappings
+    // 3. Insert Domain Mappings
     if (Array.isArray(domain_ids) && domain_ids.length > 0) {
       for (const dId of domain_ids) {
-        await client.query(
-          `INSERT INTO project_domain (project_id, domain_id)
-           VALUES ($1, $2)
-           ON CONFLICT DO NOTHING`,
-          [projectId, parseInt(dId, 10)]
-        );
+        const domainIdNum = parseInt(String(dId), 10);
+        if (!isNaN(domainIdNum)) {
+          await client.query(
+            `INSERT INTO project_domain (project_id, domain_id)
+             VALUES ($1, $2)
+             ON CONFLICT DO NOTHING`,
+            [projectId, domainIdNum]
+          );
+        }
       }
     }
 
+    // 4. Atomically insert into embedding_ref in the same transaction
+    await client.query(
+      `INSERT INTO embedding_ref (entity_type, entity_id, embedding, model)
+       VALUES ('PROJECT', $1, $2::vector, 'Xenova/all-MiniLM-L6-v2')
+       ON CONFLICT (entity_type, entity_id)
+       DO UPDATE SET embedding = EXCLUDED.embedding, model = EXCLUDED.model, created_at = NOW()`,
+      [projectId, vectorStr]
+    );
+
     await client.query('COMMIT');
-
-    // 3. Generate Embedding using MiniLM & store in embedding_ref
-    let embeddingSuccess = false;
-    let embeddingError: string | null = null;
-
-    try {
-      const textToEmbed = `${title}. ${problem_statement}. ${description || ''}`;
-      const rawVector = await generateEmbedding(textToEmbed);
-      const vectorStr = formatVectorForPg(rawVector);
-
-      await query(
-        `INSERT INTO embedding_ref (entity_type, entity_id, embedding, model)
-         VALUES ('PROJECT', $1, $2::vector, 'Xenova/all-MiniLM-L6-v2')
-         ON CONFLICT (entity_type, entity_id)
-         DO UPDATE SET embedding = EXCLUDED.embedding, model = EXCLUDED.model, created_at = NOW()`,
-        [projectId, vectorStr]
-      );
-      embeddingSuccess = true;
-    } catch (e: any) {
-      console.error(`Failed to generate embedding for project ${projectId}:`, e);
-      embeddingError = e.message || 'Embedding generation failed';
-    }
 
     return NextResponse.json(
       {
         project: newProject,
-        embeddingStatus: embeddingSuccess ? 'indexed' : 'failed',
-        embeddingError,
+        embeddingStatus: 'indexed',
       },
       { status: 201 }
     );

@@ -98,6 +98,7 @@ CREATE TABLE research_paper (
 -- ----------------------------------------------------------------------------
 CREATE TABLE author (
     author_id SERIAL PRIMARY KEY,
+    openalex_id VARCHAR(150) UNIQUE,
     name VARCHAR(150) NOT NULL,
     affiliation VARCHAR(255),
     email VARCHAR(120)

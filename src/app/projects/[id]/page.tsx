@@ -343,17 +343,22 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
       </div>
 
       {/* Faculty Review & Stored Procedure Execution Panel */}
-      <div className="glass-panel p-6 sm:p-8 rounded-3xl border border-slate-700/60">
-        <div className="flex items-center gap-3 mb-6">
-          <div className="h-9 w-9 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400">
+      <div className="p-6 sm:p-8 rounded-2xl bg-slate-900/70 border border-slate-800 space-y-5">
+        <div className="flex items-center gap-3">
+          <div className="h-9 w-9 rounded-xl bg-purple-950 border border-purple-800/50 flex items-center justify-center text-purple-400">
             <ShieldCheck className="h-5 w-5" />
           </div>
           <div>
-            <h2 className="text-lg font-bold text-white">Faculty Approval & Transaction Review</h2>
+            <h2 className="text-lg font-bold text-white">Faculty Approval &amp; Review Workflow</h2>
             <p className="text-xs text-slate-400">
-              Executes stored procedure <code className="text-cyan-400 font-mono">CALL sp_review_and_approve_project()</code> with ACID atomicity
+              Executes stored procedure <code className="text-purple-300 font-mono">CALL sp_review_and_approve_project()</code> with trigger audit logging
             </p>
           </div>
+        </div>
+
+        {/* Demo Notice Banner */}
+        <div className="p-3.5 rounded-xl bg-purple-950/30 border border-purple-900/50 text-xs text-purple-300/90 leading-relaxed">
+          <strong className="text-purple-200">Demonstration Workflow:</strong> This academic platform uses seeded university personas. Selecting a faculty reviewer simulates institutional authorization and executes stored procedure validation.
         </div>
 
         <form onSubmit={handleReviewSubmit} className="space-y-4">

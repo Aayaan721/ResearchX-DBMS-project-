@@ -107,6 +107,11 @@ export async function PUT(
       return NextResponse.json({ error: 'Problem statement cannot be empty' }, { status: 400 });
     }
 
+    // 1. Generate updated 384-dimensional dense vector BEFORE transaction commit
+    const textToEmbed = `${title.trim()}. ${problem_statement.trim()}. ${(description || '').trim()}`;
+    const rawVector = await generateEmbedding(textToEmbed);
+    const vectorStr = formatVectorForPg(rawVector);
+
     await client.query('BEGIN');
 
     const updateRes = await client.query(
@@ -125,39 +130,34 @@ export async function PUT(
     if (Array.isArray(domain_ids)) {
       await client.query('DELETE FROM project_domain WHERE project_id = $1', [projectId]);
       for (const dId of domain_ids) {
-        await client.query(
-          `INSERT INTO project_domain (project_id, domain_id)
-           VALUES ($1, $2)
-           ON CONFLICT DO NOTHING`,
-          [projectId, parseInt(dId, 10)]
-        );
+        const domainIdNum = parseInt(String(dId), 10);
+        if (!isNaN(domainIdNum)) {
+          await client.query(
+            `INSERT INTO project_domain (project_id, domain_id)
+             VALUES ($1, $2)
+             ON CONFLICT DO NOTHING`,
+            [projectId, domainIdNum]
+          );
+        }
       }
     }
 
+    // 2. Atomically update embedding in the exact same transaction
+    await client.query(
+      `INSERT INTO embedding_ref (entity_type, entity_id, embedding, model)
+       VALUES ('PROJECT', $1, $2::vector, 'Xenova/all-MiniLM-L6-v2')
+       ON CONFLICT (entity_type, entity_id)
+       DO UPDATE SET embedding = EXCLUDED.embedding, model = EXCLUDED.model, created_at = NOW()`,
+      [projectId, vectorStr]
+    );
+
     await client.query('COMMIT');
-
-    // Update embedding
-    try {
-      const textToEmbed = `${title}. ${problem_statement}. ${description || ''}`;
-      const rawVector = await generateEmbedding(textToEmbed);
-      const vectorStr = formatVectorForPg(rawVector);
-
-      await query(
-        `INSERT INTO embedding_ref (entity_type, entity_id, embedding, model)
-         VALUES ('PROJECT', $1, $2::vector, 'Xenova/all-MiniLM-L6-v2')
-         ON CONFLICT (entity_type, entity_id)
-         DO UPDATE SET embedding = EXCLUDED.embedding, model = EXCLUDED.model, created_at = NOW()`,
-        [projectId, vectorStr]
-      );
-    } catch (e) {
-      console.error(`Failed to update embedding for project ${projectId}:`, e);
-    }
 
     return NextResponse.json({ project: updateRes.rows[0], success: true });
   } catch (error: any) {
     await client.query('ROLLBACK');
     console.error('Error updating project:', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ error: error.message || 'Failed to update project' }, { status: 500 });
   } finally {
     client.release();
   }

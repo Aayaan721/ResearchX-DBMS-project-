@@ -70,12 +70,13 @@ dbms_mini_project/
 │   ├── generate_seed_embeddings.mjs     # Indexes seed records into pgvector
 │   ├── test_platform.mjs                # Automated 13-step integration test suite
 │   ├── test_transaction_rollback.mjs    # Multi-statement transaction rollback & integrity tests
+│   ├── test_phase3_corrections.mjs      # Phase 3 atomic consistency & OpenAlex ID tests
 │   ├── verify_browser_and_screenshots.mjs # Browser UI verification & screenshot automation
 │   ├── capture_sql_screenshots.mjs      # Terminal-grade SQL execution screenshot generator
 │   └── generate_evidence.mjs            # Dumps verifiable outputs to docs/evidence/
 ├── docs/
 │   └── evidence/                        # Real query outputs & test execution logs
-│       └── screenshots/                 # 13 genuine UI & SQL execution screenshots
+│       └── screenshots/                 # 14 genuine UI & SQL execution screenshots
 ├── next.config.js                       # External packages config for ONNX runtime
 ├── tailwind.config.js                   # Modern styling theme
 ├── package.json                         # Dependencies & run scripts
@@ -169,19 +170,38 @@ Execute 7.1 to 7.6 (GROUP BY, HAVING, correlated subqueries, multi-table JOINs):
 psql -U postgres -d researchx -f "database/queries.sql"
 ```
 
-### 5. Evidence & Screenshots Manifest
-Genuine execution logs are saved in `docs/evidence/` and all 13 verified screenshots are in `docs/evidence/screenshots/`:
-- `01_dashboard.png`: Live system metrics, domain distribution, and trigger audit trail
+### 5. Phase 3 Backend & Data Integrity Test Suite
+Verify atomic embedding consistency, OpenAlex author ID mapping, and input validation bounds:
+```powershell
+node scripts/test_phase3_corrections.mjs
+```
+
+### 6. Evidence & Screenshots Manifest
+Genuine execution logs are saved in `docs/evidence/` and all 14 verified screenshots are in `docs/evidence/screenshots/`:
+- `01_dashboard.png`: Redesigned research discovery homepage with integrated search & pillars
 - `02_projects_listing.png`: Projects catalog with search, domain filtering, and status pills
 - `03_project_submission_form.png`: Student project submission form with domain tags
 - `04_project_details_and_review.png`: Project details, 1-click similarity results, and faculty review panel
-- `05_project_edit_persistence.png`: Project editing form and persistence verification
+- `05_project_edit_persistence.png`: Project editing form and atomic persistence verification
 - `06_openalex_search.png`: Live OpenAlex academic literature search with DOI/PDF links
 - `07_saved_papers.png`: Saved research papers and multi-author relational catalog
-- `08_similarity_search.png`: pgvector semantic cosine similarity ranking engine
+- `08_similarity_search.png`: pgvector semantic cosine similarity ranking engine with score pills
 - `09_sql_table_data_and_counts.png`: Relational schema table counts and user accounts SQL
 - `10_sql_joins_and_subqueries.png`: Relational queries 7.1, 7.4, and 7.6 execution proof
 - `11_sql_stored_procedures_and_triggers.png`: Stored procedures & trigger audit log execution
 - `12_sql_pgvector_cosine_similarity.png`: pgvector HNSW vector index definition and cosine query
 - `13_sql_transaction_rollback.png`: Multi-statement transaction rollback under failure proof
+- `14_mobile_homepage.png`: Mobile layout verification (375x812) with responsive navigation
+
+---
+
+## 6. Security Scope & Demonstration Context
+
+> [!IMPORTANT]
+> **Academic Demonstration Scope:** ResearchX is built as a university DBMS evaluation mini-project (UE23CS351A — PES University) to demonstrate relational database architecture, stored procedures, triggers, ACID transaction guarantees, and pgvector cosine similarity integration.
+> 
+> - **Authentication Context:** The platform uses seeded demonstration student and faculty personas (`app_user`) to simulate institutional review workflows and execute stored procedure authorization guards (`sp_review_and_approve_project`). It does **not** include an enterprise authentication provider (e.g. NextAuth, Supabase Auth, or Okta) and is **not intended for public internet deployment without production authentication middleware**.
+> - **Destructive Operations:** Deletion of projects and saved papers triggers deliberate client-side confirmation dialogs to prevent accidental data loss.
+> - **Similarity Interpretation:** Similarity scores represent mathematical **vector cosine similarity** computed over 384-dimensional dense embeddings (`Xenova/all-MiniLM-L6-v2`) in PostgreSQL. They represent conceptual alignment against locally indexed research, **not** probabilities of duplication, plagiarism, or lack of originality.
+
 

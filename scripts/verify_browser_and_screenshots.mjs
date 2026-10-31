@@ -26,7 +26,7 @@ async function clickByText(page, selector, text) {
 
 async function main() {
   console.log('================================================================');
-  console.log(' ResearchX Phase 2 — Browser Automation & UI Verification');
+  console.log(' ResearchX Phase 3 — UI/UX Browser Verification & Screenshots');
   console.log('================================================================\n');
 
   fs.mkdirSync(SCREENSHOT_DIR, { recursive: true });
@@ -51,9 +51,9 @@ async function main() {
 
   try {
     // --------------------------------------------------------------------------
-    // Workflow 1: Dashboard loads & shows genuine database statistics
+    // Workflow 1: Redesigned Homepage (Desktop & Mobile)
     // --------------------------------------------------------------------------
-    console.log('[1/9] Testing Dashboard (http://localhost:3000)...');
+    console.log('[1/10] Testing Redesigned Homepage (http://localhost:3000)...');
     await page.goto('http://localhost:3000', { waitUntil: 'networkidle2' });
     await page.waitForSelector('h1');
     await new Promise((r) => setTimeout(r, 1200));
@@ -63,25 +63,40 @@ async function main() {
     console.log(`  -> Saved: ${dashboardScreenshotPath}`);
 
     const statsText = await page.evaluate(() => document.body.innerText.toLowerCase());
-    if (!statsText.includes('total student projects') || !statsText.includes('pgvector embeddings')) {
-      throw new Error('Dashboard stats cards not rendered properly.');
+    if (!statsText.includes('student projects') || !statsText.includes('explore research ideas')) {
+      throw new Error('Homepage hero and metrics cards not rendered properly.');
     }
-    console.log('  -> Dashboard metrics & domains verified successfully.');
+    console.log('  -> Homepage research hero & metrics verified successfully.');
 
     // --------------------------------------------------------------------------
-    // Workflow 2: Browse existing research projects
+    // Workflow 2: Mobile Viewport Layout Verification
     // --------------------------------------------------------------------------
-    console.log('\n[2/9] Testing Projects Directory (http://localhost:3000/projects)...');
+    console.log('\n[2/10] Testing Mobile Layout (Viewport 375x812)...');
+    await page.setViewport({ width: 375, height: 812, isMobile: true });
+    await page.goto('http://localhost:3000', { waitUntil: 'networkidle2' });
+    await new Promise((r) => setTimeout(r, 800));
+
+    const mobileScreenshotPath = `${SCREENSHOT_DIR}/14_mobile_homepage.png`;
+    await page.screenshot({ path: mobileScreenshotPath, fullPage: true });
+    console.log(`  -> Saved: ${mobileScreenshotPath}`);
+
+    // Reset viewport back to desktop
+    await page.setViewport({ width: 1366, height: 850, isMobile: false });
+
+    // --------------------------------------------------------------------------
+    // Workflow 3: Browse Projects Directory & Integrated Search
+    // --------------------------------------------------------------------------
+    console.log('\n[3/10] Testing Projects Directory (http://localhost:3000/projects)...');
     await page.goto('http://localhost:3000/projects', { waitUntil: 'networkidle2' });
-    await page.waitForSelector('input[placeholder*="Search projects"]');
+    await page.waitForSelector('input[placeholder*="Search by project title"]');
     await new Promise((r) => setTimeout(r, 800));
 
     // Test live search filter
-    await page.type('input[placeholder*="Search projects"]', 'BioMedQA');
+    await page.type('input[placeholder*="Search by project title"]', 'BioMedQA');
     await new Promise((r) => setTimeout(r, 500));
 
     // Clear search
-    await page.click('input[placeholder*="Search projects"]', { clickCount: 3 });
+    await page.click('input[placeholder*="Search by project title"]', { clickCount: 3 });
     await page.keyboard.press('Backspace');
     await new Promise((r) => setTimeout(r, 500));
 
@@ -90,9 +105,9 @@ async function main() {
     console.log(`  -> Saved: ${listingScreenshotPath}`);
 
     // --------------------------------------------------------------------------
-    // Workflow 3: Submit New Research Project & Verify pgvector indexing
+    // Workflow 4: Submit New Research Project & Atomic pgvector indexing
     // --------------------------------------------------------------------------
-    console.log('\n[3/9] Testing Project Submission (http://localhost:3000/projects/new)...');
+    console.log('\n[4/10] Testing Project Submission Form (http://localhost:3000/projects/new)...');
     await page.goto('http://localhost:3000/projects/new', { waitUntil: 'networkidle2' });
     await page.waitForSelector('input[placeholder*="Adaptive Indexing"]');
 
@@ -132,9 +147,9 @@ async function main() {
     console.log('  -> Verified in PostgreSQL: Project row exists and 384-d pgvector is stored.');
 
     // --------------------------------------------------------------------------
-    // Workflow 4: Project Details, 1-Click Similarity, and Faculty Review Procedure
+    // Workflow 5: Project Details & Demo Faculty Review
     // --------------------------------------------------------------------------
-    console.log('\n[4/9] Testing Project Details & Faculty Review Procedure...');
+    console.log('\n[5/10] Testing Project Details & Demo Faculty Review...');
     await page.waitForSelector('h1');
     await new Promise((r) => setTimeout(r, 1000));
 
@@ -165,9 +180,9 @@ async function main() {
     console.log(`  -> Project status is Approved in PostgreSQL. Audit log entries count: ${checkAudit.rows.length}`);
 
     // --------------------------------------------------------------------------
-    // Workflow 5: Edit Project & Persistence Verification
+    // Workflow 6: Edit Project & Atomic Re-indexing Persistence
     // --------------------------------------------------------------------------
-    console.log('\n[5/9] Testing Edit Project Form...');
+    console.log('\n[6/10] Testing Edit Project Form...');
     await page.goto(`http://localhost:3000/projects/${createdProjectId}/edit`, { waitUntil: 'networkidle2' });
     await page.waitForSelector('input[value*="QuantumGraph"]');
 
@@ -187,14 +202,14 @@ async function main() {
     console.log('  -> Project edit persisted cleanly in PostgreSQL.');
 
     // --------------------------------------------------------------------------
-    // Workflow 6: Live OpenAlex Academic Paper Search
+    // Workflow 7: Live OpenAlex Academic Search
     // --------------------------------------------------------------------------
-    console.log('\n[6/9] Testing Live OpenAlex Academic Search (http://localhost:3000/discover)...');
+    console.log('\n[7/10] Testing Live OpenAlex Academic Search (http://localhost:3000/discover)...');
     await page.goto('http://localhost:3000/discover', { waitUntil: 'networkidle2' });
-    await page.waitForSelector('input[placeholder*="Search academic works"]');
+    await page.waitForSelector('input[placeholder*="Search by topic"]');
 
-    await page.click('input[placeholder*="Search academic works"]', { clickCount: 3 });
-    await page.type('input[placeholder*="Search academic works"]', 'vector database similarity postgresql');
+    await page.click('input[placeholder*="Search by topic"]', { clickCount: 3 });
+    await page.type('input[placeholder*="Search by topic"]', 'vector database similarity postgresql');
     await page.click('button[type="submit"]');
     await new Promise((r) => setTimeout(r, 4000)); // Wait for OpenAlex response
 
@@ -202,7 +217,7 @@ async function main() {
     await page.screenshot({ path: openalexScreenshotPath, fullPage: true });
     console.log(`  -> Saved: ${openalexScreenshotPath}`);
 
-    // Click "Save Paper" on first available card
+    // Click "Save Paper"
     try {
       console.log('  -> Clicking Save Paper for an OpenAlex work...');
       await clickByText(page, 'button', 'Save Paper');
@@ -213,9 +228,9 @@ async function main() {
     }
 
     // --------------------------------------------------------------------------
-    // Workflow 7: Saved Papers Catalog in PostgreSQL
+    // Workflow 8: Saved Papers Library
     // --------------------------------------------------------------------------
-    console.log('\n[7/9] Testing Saved Papers Catalog (http://localhost:3000/papers)...');
+    console.log('\n[8/10] Testing Saved Papers Library (http://localhost:3000/papers)...');
     await page.goto('http://localhost:3000/papers', { waitUntil: 'networkidle2' });
     await page.waitForSelector('h1');
     await new Promise((r) => setTimeout(r, 1200));
@@ -225,9 +240,9 @@ async function main() {
     console.log(`  -> Saved: ${savedPapersScreenshotPath}`);
 
     // --------------------------------------------------------------------------
-    // Workflow 8: Semantic Vector Similarity Engine
+    // Workflow 9: Semantic Vector Similarity Engine
     // --------------------------------------------------------------------------
-    console.log('\n[8/9] Testing Vector Similarity Engine (http://localhost:3000/similarity)...');
+    console.log('\n[9/10] Testing Vector Similarity Engine (http://localhost:3000/similarity)...');
     await page.goto('http://localhost:3000/similarity', { waitUntil: 'networkidle2' });
     await page.waitForSelector('textarea[placeholder*="Type your proposed project idea"]');
 
@@ -243,7 +258,6 @@ async function main() {
     await page.screenshot({ path: similarityScreenshotPath, fullPage: true });
     console.log(`  -> Saved: ${similarityScreenshotPath}`);
 
-    // Verify similarity results exist in DOM
     const similarityResultsText = await page.evaluate(() => document.body.innerText.toLowerCase());
     if (!similarityResultsText.includes('ranked similarity results') && !similarityResultsText.includes('nearest neighbors found')) {
       throw new Error('Vector similarity results failed to display in UI.');
@@ -251,9 +265,9 @@ async function main() {
     console.log('  -> Vector similarity search executed and rendered ranked scores successfully.');
 
     // --------------------------------------------------------------------------
-    // Workflow 9: Delete Temporary Test Project
+    // Workflow 10: Clean up temporary test project
     // --------------------------------------------------------------------------
-    console.log(`\n[9/9] Cleaning up temporary test project #${createdProjectId}...`);
+    console.log(`\n[10/10] Cleaning up temporary test project #${createdProjectId}...`);
     const delRes = await pool.query('DELETE FROM project WHERE project_id = $1 RETURNING project_id;', [createdProjectId]);
     console.log(`  -> Deleted project #${delRes.rows[0].project_id} from PostgreSQL.`);
 
@@ -262,15 +276,6 @@ async function main() {
     const checkReviews = await pool.query('SELECT * FROM project_review WHERE project_id = $1;', [createdProjectId]);
     const checkEmb = await pool.query('SELECT * FROM embedding_ref WHERE entity_type = \'PROJECT\' AND entity_id = $1;', [createdProjectId]);
     console.log(`  -> Cascade check: project_domain: ${checkDomainMap.rows.length}, reviews: ${checkReviews.rows.length}, embeddings: ${checkEmb.rows.length}`);
-
-    // Audit log should have captured DELETE action
-    const deleteAudit = await pool.query(
-      `SELECT log_id, action, record_id, old_values, changed_at 
-       FROM audit_log 
-       WHERE table_name = 'project' AND action = 'DELETE' AND record_id = $1;`,
-      [createdProjectId]
-    );
-    console.log(`  -> Trigger captured DELETE action in audit_log: ${deleteAudit.rows.length > 0 ? 'YES' : 'NO'}`);
 
   } catch (error) {
     console.error('\n*** ERROR DURING BROWSER WORKFLOW ***:', error);
@@ -281,7 +286,7 @@ async function main() {
   }
 
   console.log('\n================================================================');
-  console.log(' ALL 9 UI & DB WORKFLOWS COMPLETED SUCCESSFULLY!');
+  console.log(' ALL 10 UI & DB WORKFLOWS COMPLETED SUCCESSFULLY!');
   console.log(' Captured genuine screenshots in docs/evidence/screenshots/');
   console.log('================================================================\n');
 }

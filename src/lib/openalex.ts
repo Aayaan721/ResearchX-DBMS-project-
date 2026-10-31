@@ -121,3 +121,57 @@ export async function searchOpenAlex(query: string, limit = 10): Promise<OpenAle
     };
   });
 }
+
+/**
+ * Fetches canonical work metadata directly from OpenAlex by Work ID
+ */
+export async function getCanonicalWork(openalexId: string): Promise<OpenAlexPaper | null> {
+  if (!openalexId || !openalexId.trim()) return null;
+
+  const cleanId = openalexId.trim().replace(/^https?:\/\/openalex\.org\//, '');
+  const mailto = process.env.OPENALEX_MAILTO || 'researchx-demo@pes.edu';
+  const url = `https://api.openalex.org/works/${encodeURIComponent(cleanId)}?mailto=${encodeURIComponent(mailto)}`;
+
+  try {
+    const res = await fetch(url, {
+      headers: { 'User-Agent': `ResearchX/1.0 (mailto:${mailto})` },
+      next: { revalidate: 3600 },
+    });
+
+    if (!res.ok) return null;
+    const work = await res.json();
+
+    const reconstructed = reconstructAbstract(work.abstract_inverted_index);
+    const cleanDoi = work.doi ? work.doi.replace('https://doi.org/', '') : null;
+
+    const authors: OpenAlexAuthor[] = (work.authorships || []).map((a: any) => {
+      const institutions = (a.institutions || []).map((inst: any) => inst.display_name).join(', ');
+      return {
+        id: (a.author?.id || '').replace('https://openalex.org/', ''),
+        display_name: a.author?.display_name || 'Unknown Author',
+        affiliation: institutions || undefined,
+        orcid: a.author?.orcid,
+      };
+    });
+
+    const keywords: string[] = (work.keywords || []).map((k: any) => k.display_name || '').filter(Boolean);
+
+    return {
+      id: work.id || `https://openalex.org/${cleanId}`,
+      openalex_id: cleanId,
+      title: work.title || 'Untitled Research',
+      abstract: reconstructed,
+      doi: cleanDoi,
+      doi_url: work.doi || null,
+      publication_year: work.publication_year || null,
+      host_venue: work.primary_location?.source?.display_name || work.host_venue?.display_name || 'Academic Venue',
+      cited_by_count: work.cited_by_count || 0,
+      authors,
+      keywords,
+      pdf_url: work.primary_location?.pdf_url || work.open_access?.oa_url || null,
+    };
+  } catch (err) {
+    console.warn(`Failed to fetch canonical OpenAlex work for ${cleanId}:`, err);
+    return null;
+  }
+}

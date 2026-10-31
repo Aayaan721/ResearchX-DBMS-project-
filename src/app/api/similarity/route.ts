@@ -5,14 +5,19 @@ import { generateEmbedding, formatVectorForPg } from '@/lib/embeddings';
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { queryText, projectId, limit = 8 } = body;
+    const { queryText, projectId, limit } = body || {};
+    const rawLimit = parseInt(String(limit), 10);
+    const safeLimit = isNaN(rawLimit) ? 8 : Math.min(Math.max(rawLimit, 1), 50);
 
     let vectorStr: string | null = null;
     let excludeProjectId: number | null = null;
     let sourceTitle: string | null = null;
 
     if (projectId) {
-      excludeProjectId = parseInt(projectId, 10);
+      excludeProjectId = parseInt(String(projectId), 10);
+      if (isNaN(excludeProjectId)) {
+        return NextResponse.json({ error: 'Invalid project ID specified' }, { status: 400 });
+      }
       const projRes = await query(
         `SELECT p.title, er.embedding
          FROM project p
@@ -27,15 +32,22 @@ export async function POST(request: NextRequest) {
             error:
               'Selected project either does not exist or does not yet have an indexed vector embedding in PostgreSQL.',
           },
-          { status: 400 }
+          { status: 404 }
         );
       }
 
       sourceTitle = projRes.rows[0].title;
       vectorStr = projRes.rows[0].embedding;
-    } else if (queryText && queryText.trim()) {
-      sourceTitle = `Query: "${queryText.trim().slice(0, 50)}..."`;
-      const rawVector = await generateEmbedding(queryText.trim());
+    } else if (queryText && typeof queryText === 'string' && queryText.trim()) {
+      const cleanQuery = queryText.trim();
+      if (cleanQuery.length < 3) {
+        return NextResponse.json({ error: 'Search query must be at least 3 characters long' }, { status: 400 });
+      }
+      if (cleanQuery.length > 4000) {
+        return NextResponse.json({ error: 'Search query must not exceed 4000 characters' }, { status: 400 });
+      }
+      sourceTitle = `Query: "${cleanQuery.slice(0, 60)}${cleanQuery.length > 60 ? '...' : ''}"`;
+      const rawVector = await generateEmbedding(cleanQuery);
       vectorStr = formatVectorForPg(rawVector);
     } else {
       return NextResponse.json(
@@ -86,10 +98,12 @@ export async function POST(request: NextRequest) {
       LIMIT $3;
     `;
 
-    const results = await query(sql, [vectorStr, excludeProjectId, limit]);
+    const results = await query(sql, [vectorStr, excludeProjectId, safeLimit]);
 
     return NextResponse.json({
       sourceTitle,
+      metric: 'cosine_similarity',
+      disclaimer: 'Scores indicate semantic cosine similarity between 384-dimensional dense vectors in PostgreSQL. They are not probabilities and do not assess originality or plagiarism.',
       totalMatches: results.rows.length,
       matches: results.rows.map((row) => ({
         ...row,

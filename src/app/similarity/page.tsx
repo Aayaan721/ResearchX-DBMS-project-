@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { 
   Sparkles, 
@@ -9,16 +10,19 @@ import {
   BookOpen, 
   ArrowRight, 
   AlertCircle,
-  Database,
-  Info
+  Info,
+  ShieldAlert
 } from 'lucide-react';
 import SimilarityScoreBadge from '@/components/SimilarityScoreBadge';
 
-export default function SimilarityPage() {
+function SimilarityContent() {
+  const searchParams = useSearchParams();
+  const initialQ = searchParams.get('q') || 'approximate nearest neighbor search on dense vectors using hnsw graphs';
+
   const [mode, setMode] = useState<'text' | 'project'>('text');
-  const [queryText, setQueryText] = useState('differential privacy in federated learning healthcare');
+  const [queryText, setQueryText] = useState(initialQ);
   const [selectedProjectId, setSelectedProjectId] = useState<string>('');
-  const [projectsList, setProjectsList] = useState<any[]>([]);
+  const [projectsList, setProjectsList] = useState<Array<{ project_id: number; title: string; status: string }>>([]);
   
   const [results, setResults] = useState<any[]>([]);
   const [sourceTitle, setSourceTitle] = useState<string | null>(null);
@@ -38,7 +42,7 @@ export default function SimilarityPage() {
       .catch((err) => console.error(err));
   }, []);
 
-  async function handleSearch(e?: React.FormEvent) {
+  async function handleSearch(e?: React.FormEvent, customQuery?: string) {
     if (e) e.preventDefault();
     setLoading(true);
     setError(null);
@@ -46,12 +50,13 @@ export default function SimilarityPage() {
     setSourceTitle(null);
 
     try {
-      const payload: any = { limit: 10 };
+      const payload: { limit: number; queryText?: string; projectId?: number } = { limit: 8 };
       if (mode === 'text') {
-        if (!queryText.trim()) throw new Error('Please type a research concept or problem statement.');
-        payload.queryText = queryText.trim();
+        const textToUse = customQuery || queryText;
+        if (!textToUse.trim()) throw new Error('Please enter a research concept or topic statement.');
+        payload.queryText = textToUse.trim();
       } else {
-        if (!selectedProjectId) throw new Error('Please select an existing project.');
+        if (!selectedProjectId) throw new Error('Please select an existing project from the dropdown.');
         payload.projectId = parseInt(selectedProjectId, 10);
       }
 
@@ -62,62 +67,69 @@ export default function SimilarityPage() {
       });
 
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Vector similarity search failed');
+      if (!res.ok) throw new Error(data.error || 'Similarity search failed');
 
       setResults(data.matches || []);
       setSourceTitle(data.sourceTitle);
     } catch (err: any) {
-      setError(err.message || 'Error executing pgvector cosine search');
+      setError(err.message || 'Error executing similarity discovery');
     } finally {
       setLoading(false);
     }
   }
 
+  // Trigger search on mount if initial query param provided
+  useEffect(() => {
+    if (searchParams.get('q')) {
+      handleSearch(undefined, searchParams.get('q')!);
+    }
+  }, [searchParams]);
+
   return (
     <div className="space-y-8 max-w-5xl mx-auto">
       {/* Header */}
-      <div>
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 text-xs font-semibold mb-3">
-          <Sparkles className="h-3.5 w-3.5" />
-          pgvector Dense Semantic Cosine Search Engine
+      <div className="space-y-2">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-950 text-cyan-300 border border-cyan-800/50 text-xs font-medium">
+          <Sparkles className="h-3.5 w-3.5 text-cyan-400" />
+          <span>Semantic Discovery Engine</span>
         </div>
-        <h1 className="text-3xl font-black text-white tracking-tight">
-          Semantic Similarity &amp; Prior-Art Discovery
+        <h1 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight">
+          Find Similar Research
         </h1>
-        <p className="text-sm text-slate-400 mt-1 max-w-2xl">
-          Compare your research ideas or existing student capstones against the entire locally indexed corpus of student projects and academic literature using real 384-dimensional dense vectors.
+        <p className="text-sm text-slate-300 max-w-2xl leading-relaxed">
+          Compare research proposals against locally indexed university capstones and published literature. Semantic embeddings identify conceptually aligned work even when different keywords are used.
         </p>
       </div>
 
-      {/* Scope Disclaimer Banner */}
-      <div className="p-4 rounded-2xl glass-panel border border-slate-700/60 flex items-start gap-3 text-xs text-slate-400">
+      {/* Semantic Meaning Disclaimer */}
+      <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800 flex items-start gap-3 text-xs text-slate-400 leading-relaxed">
         <Info className="h-4 w-4 text-cyan-400 shrink-0 mt-0.5" />
         <div>
-          <span className="font-semibold text-slate-200">Architecture Scope:</span> Semantic similarity is computed directly inside PostgreSQL using the pgvector <code className="text-cyan-400 font-mono">&lt;=&gt;</code> cosine distance operator over locally stored embeddings generated by <code className="text-cyan-400 font-mono">Xenova/all-MiniLM-L6-v2</code>. Online academic discovery across the broader scientific literature is handled by OpenAlex.
+          <span className="font-semibold text-slate-200">How Similarity Scores Work:</span> Scores indicate <span className="text-cyan-300 font-medium">semantic cosine similarity</span> between dense 384-dimensional text vectors in PostgreSQL. They represent conceptual relatedness, <span className="underline decoration-slate-600">not</span> probability of duplication, plagiarism, or lack of originality.
         </div>
       </div>
 
       {/* Control Panel: Mode Selection & Input Form */}
-      <div className="glass-panel p-6 sm:p-8 rounded-3xl border border-slate-700/60 space-y-6">
+      <div className="p-6 sm:p-8 rounded-2xl bg-slate-900/70 border border-slate-800 space-y-5">
         {/* Toggle Mode */}
-        <div className="flex items-center p-1 rounded-xl bg-slate-900 border border-slate-800 w-fit">
+        <div className="flex items-center p-1 rounded-xl bg-slate-950 border border-slate-800 w-fit">
           <button
             type="button"
             onClick={() => setMode('text')}
             className={`px-4 py-2 rounded-lg text-xs font-semibold transition-all ${
               mode === 'text'
-                ? 'bg-brand-600 text-white shadow-sm'
+                ? 'bg-cyan-600 text-white shadow-sm'
                 : 'text-slate-400 hover:text-slate-200'
             }`}
           >
-            Enter Research Idea / Abstract
+            Type Research Idea
           </button>
           <button
             type="button"
             onClick={() => setMode('project')}
             className={`px-4 py-2 rounded-lg text-xs font-semibold transition-all ${
               mode === 'project'
-                ? 'bg-brand-600 text-white shadow-sm'
+                ? 'bg-cyan-600 text-white shadow-sm'
                 : 'text-slate-400 hover:text-slate-200'
             }`}
           >
@@ -128,8 +140,8 @@ export default function SimilarityPage() {
         <form onSubmit={handleSearch} className="space-y-4">
           {mode === 'text' ? (
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-2">
-                Research Concept or Problem Statement
+              <label className="block text-xs font-semibold text-slate-300 mb-2">
+                Proposed Research Idea or Problem Statement
               </label>
               <textarea
                 rows={3}
@@ -137,18 +149,18 @@ export default function SimilarityPage() {
                 value={queryText}
                 onChange={(e) => setQueryText(e.target.value)}
                 placeholder="Type your proposed project idea, algorithmic intuition, or problem statement..."
-                className="w-full px-4 py-3 rounded-2xl bg-slate-900 border border-slate-700 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 transition-colors"
+                className="w-full px-4 py-3 rounded-xl bg-slate-950/80 border border-slate-700/80 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 transition-colors"
               />
             </div>
           ) : (
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-2">
-                Select Base Project (To Find Similar Records)
+              <label className="block text-xs font-semibold text-slate-300 mb-2">
+                Select Base Project to Compare
               </label>
               <select
                 value={selectedProjectId}
                 onChange={(e) => setSelectedProjectId(e.target.value)}
-                className="w-full px-4 py-3 rounded-2xl bg-slate-900 border border-slate-700 text-sm text-slate-200 focus:outline-none focus:border-cyan-500 transition-colors"
+                className="w-full px-4 py-3 rounded-xl bg-slate-950/80 border border-slate-700/80 text-sm text-slate-200 focus:outline-none focus:border-cyan-500 transition-colors"
               >
                 {projectsList.map((p) => (
                   <option key={p.project_id} value={p.project_id}>
@@ -159,21 +171,21 @@ export default function SimilarityPage() {
             </div>
           )}
 
-          <div className="flex justify-end pt-2">
+          <div className="flex justify-end pt-1">
             <button
               type="submit"
               disabled={loading}
-              className="px-6 py-3 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-semibold text-sm transition-all shadow-md active:scale-95 disabled:opacity-50 flex items-center gap-2"
+              className="px-6 py-3 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-semibold text-sm transition-all shadow-md shadow-cyan-600/20 active:scale-95 disabled:opacity-50 flex items-center gap-2"
             >
               {loading ? (
                 <>
                   <Sparkles className="h-4 w-4 animate-spin" />
-                  Generating 384-d Embedding &amp; Querying pgvector...
+                  <span>Computing Similarity...</span>
                 </>
               ) : (
                 <>
-                  <Sparkles className="h-4 w-4" />
-                  Compute Vector Similarities
+                  <Search className="h-4 w-4" />
+                  <span>Find Related Projects &amp; Papers</span>
                 </>
               )}
             </button>
@@ -182,74 +194,85 @@ export default function SimilarityPage() {
       </div>
 
       {error && (
-        <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-sm flex items-center gap-2">
+        <div className="p-4 rounded-xl bg-rose-950/40 border border-rose-800/60 text-rose-300 text-sm flex items-center gap-2">
           <AlertCircle className="h-4 w-4 shrink-0" />
-          {error}
+          <span>{error}</span>
         </div>
       )}
 
       {/* Results Section */}
       {results.length > 0 && (
         <div className="space-y-4">
-          <div className="flex items-center justify-between text-xs text-slate-400">
+          <div className="flex items-center justify-between text-xs text-slate-400 border-b border-slate-800 pb-3">
             <span>
               Ranked similarity results for: <span className="text-white font-medium">{sourceTitle}</span>
             </span>
             <span className="font-mono text-cyan-400">{results.length} nearest neighbors found</span>
           </div>
 
-          <div className="grid grid-cols-1 gap-4">
-            {results.map((item, idx) => {
+          <div className="space-y-3">
+            {results.map((item, index) => {
               const isProject = item.entity_type === 'PROJECT';
-
               return (
                 <div
                   key={`${item.entity_type}-${item.entity_id}`}
-                  className="glass-panel glass-panel-hover p-6 rounded-2xl border border-slate-700/60 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
+                  className="p-5 rounded-2xl bg-slate-900/70 border border-slate-800 hover:border-slate-700 transition-all flex flex-col md:flex-row md:items-center justify-between gap-4"
                 >
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-2">
-                      <span className="text-xs font-mono text-slate-500 font-bold">#{idx + 1}</span>
+                  <div className="space-y-2 flex-1">
+                    <div className="flex items-center gap-2">
                       <span
-                        className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
+                        className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold ${
                           isProject
-                            ? 'bg-blue-500/10 text-blue-400 border border-blue-500/30'
-                            : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30'
+                            ? 'bg-blue-950 text-blue-300 border border-blue-800/60'
+                            : 'bg-emerald-950 text-emerald-300 border border-emerald-800/60'
                         }`}
                       >
                         {isProject ? <FolderGit2 className="h-3 w-3" /> : <BookOpen className="h-3 w-3" />}
-                        {isProject ? 'Student Project' : 'Published Academic Paper'}
+                        {isProject ? 'Student Project' : 'Academic Literature'}
                       </span>
-                      <span className="text-[11px] text-slate-400">• {item.metadata_badge}</span>
+                      <span className="text-xs text-slate-400 font-medium">
+                        {item.category_info || item.metadata_badge}
+                      </span>
                     </div>
 
-                    <h3 className="text-base font-bold text-white leading-snug">
+                    <h3 className="text-base font-bold text-white hover:text-cyan-300 transition-colors">
                       {item.title}
                     </h3>
 
-                    <p className="text-xs text-slate-400 mt-2 line-clamp-2 leading-relaxed">
+                    <p className="text-xs text-slate-400 line-clamp-2 leading-relaxed">
                       {item.summary}
                     </p>
 
-                    <div className="mt-3 flex items-center gap-3 text-[11px] text-slate-500">
-                      <span>Contributor: <strong className="text-slate-300">{item.primary_contributor}</strong></span>
-                      {item.category_info && (
-                        <>
-                          <span>•</span>
-                          <span className="truncate max-w-[300px]">{item.category_info}</span>
-                        </>
-                      )}
+                    <div className="text-[11px] text-slate-500">
+                      <span>Contributor: </span>
+                      <span className="text-slate-300 font-medium">{item.primary_contributor}</span>
                     </div>
                   </div>
 
-                  <div className="flex sm:flex-col items-center sm:items-end justify-between w-full sm:w-auto gap-4 pt-3 sm:pt-0 border-t sm:border-t-0 border-slate-800">
-                    <SimilarityScoreBadge score={item.similarity_score} />
-                    {isProject && (
+                  {/* Similarity Badge & Action Link */}
+                  <div className="flex md:flex-col items-center md:items-end justify-between gap-3 shrink-0 pt-2 md:pt-0 border-t md:border-t-0 border-slate-800">
+                    <div className="text-right">
+                      <span className="text-[10px] text-slate-400 uppercase tracking-wider block mb-1">
+                        Semantic Match
+                      </span>
+                      <SimilarityScoreBadge score={item.similarity_score} />
+                    </div>
+
+                    {isProject ? (
                       <Link
                         href={`/projects/${item.entity_id}`}
-                        className="inline-flex items-center gap-1 text-xs font-semibold text-cyan-400 hover:text-cyan-300 transition-colors"
+                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 transition-colors"
                       >
-                        View Project <ArrowRight className="h-3.5 w-3.5" />
+                        <span>View Project</span>
+                        <ArrowRight className="h-3 w-3" />
+                      </Link>
+                    ) : (
+                      <Link
+                        href={`/papers`}
+                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 transition-colors"
+                      >
+                        <span>View in Library</span>
+                        <ArrowRight className="h-3 w-3" />
                       </Link>
                     )}
                   </div>
@@ -260,5 +283,13 @@ export default function SimilarityPage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function SimilarityPage() {
+  return (
+    <Suspense fallback={<div className="p-12 text-center text-slate-400">Loading similarity engine...</div>}>
+      <SimilarityContent />
+    </Suspense>
   );
 }
