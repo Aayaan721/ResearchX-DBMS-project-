@@ -55,7 +55,7 @@ export default function Navbar() {
             </Link>
 
             {/* Desktop Navigation Links */}
-            <div className="hidden md:flex items-center gap-1.5">
+            <div className="hidden xl:flex items-center gap-1.5">
               {navLinks.map((link) => {
                 const active = isActive(link.href);
                 return (
@@ -76,7 +76,7 @@ export default function Navbar() {
           </div>
 
           {/* Right Action: Prominent Submit Project Button */}
-          <div className="hidden sm:flex items-center gap-3">
+          <div className="hidden xl:flex items-center gap-3">
             <Link
               href="/projects/new"
               className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white text-sm font-semibold transition-all shadow-md shadow-cyan-600/20 active:scale-95"
@@ -87,7 +87,7 @@ export default function Navbar() {
           </div>
 
           {/* Mobile Menu Toggle Button */}
-          <div className="flex sm:hidden items-center gap-2">
+          <div className="flex xl:hidden items-center gap-2">
             <Link
               href="/projects/new"
               className="p-2 rounded-lg bg-cyan-600 text-white hover:bg-cyan-500"
@@ -108,7 +108,7 @@ export default function Navbar() {
 
       {/* Mobile Dropdown Menu */}
       {mobileMenuOpen && (
-        <div className="sm:hidden border-t border-slate-800 bg-slate-900/95 px-4 pt-3 pb-5 space-y-1 backdrop-blur-xl animate-in slide-in-from-top-2">
+        <div className="xl:hidden border-t border-slate-800 bg-slate-900/95 px-4 pt-3 pb-5 space-y-1 backdrop-blur-xl animate-in slide-in-from-top-2">
           {navLinks.map((link) => {
             const active = isActive(link.href);
             return (
