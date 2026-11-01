@@ -17,10 +17,10 @@ import SimilarityScoreBadge from '@/components/SimilarityScoreBadge';
 
 function SimilarityContent() {
   const searchParams = useSearchParams();
-  const initialQ = searchParams.get('q') || 'approximate nearest neighbor search on dense vectors using hnsw graphs';
+  const urlQuery = searchParams.get('q') || '';
 
   const [mode, setMode] = useState<'text' | 'project'>('text');
-  const [queryText, setQueryText] = useState(initialQ);
+  const [queryText, setQueryText] = useState(urlQuery);
   const [selectedProjectId, setSelectedProjectId] = useState<string>('');
   const [projectsList, setProjectsList] = useState<Array<{ project_id: number; title: string; status: string }>>([]);
   
@@ -78,11 +78,17 @@ function SimilarityContent() {
     }
   }
 
-  // Trigger search on mount if initial query param provided
+  // Trigger search on mount or URL change if initial query param provided
   useEffect(() => {
-    if (searchParams.get('q')) {
-      handleSearch(undefined, searchParams.get('q')!);
+    const q = searchParams.get('q');
+    if (q && q.trim()) {
+      setQueryText(q);
+      handleSearch(undefined, q);
+    } else {
+      setQueryText('');
+      setResults([]);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
 
   return (
@@ -148,7 +154,7 @@ function SimilarityContent() {
                 required
                 value={queryText}
                 onChange={(e) => setQueryText(e.target.value)}
-                placeholder="Type your proposed project idea, algorithmic intuition, or problem statement..."
+                placeholder="Describe your research idea or problem statement..."
                 className="w-full px-4 py-3 rounded-xl bg-slate-950/80 border border-slate-700/80 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 transition-colors"
               />
             </div>

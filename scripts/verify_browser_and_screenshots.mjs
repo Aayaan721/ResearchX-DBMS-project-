@@ -206,10 +206,10 @@ async function main() {
     // --------------------------------------------------------------------------
     console.log('\n[7/10] Testing Live OpenAlex Academic Search (http://localhost:3000/discover)...');
     await page.goto('http://localhost:3000/discover', { waitUntil: 'networkidle2' });
-    await page.waitForSelector('input[placeholder*="Search by topic"]');
+    await page.waitForSelector('input[placeholder*="Search research papers"]');
 
-    await page.click('input[placeholder*="Search by topic"]', { clickCount: 3 });
-    await page.type('input[placeholder*="Search by topic"]', 'vector database similarity postgresql');
+    await page.click('input[placeholder*="Search research papers"]', { clickCount: 3 });
+    await page.type('input[placeholder*="Search research papers"]', 'vector database similarity postgresql');
     await page.click('button[type="submit"]');
     await new Promise((r) => setTimeout(r, 4000)); // Wait for OpenAlex response
 
@@ -244,11 +244,11 @@ async function main() {
     // --------------------------------------------------------------------------
     console.log('\n[9/10] Testing Vector Similarity Engine (http://localhost:3000/similarity)...');
     await page.goto('http://localhost:3000/similarity', { waitUntil: 'networkidle2' });
-    await page.waitForSelector('textarea[placeholder*="Type your proposed project idea"]');
+    await page.waitForSelector('textarea[placeholder*="Describe your research idea"]');
 
-    await page.click('textarea[placeholder*="Type your proposed project idea"]', { clickCount: 3 });
+    await page.click('textarea[placeholder*="Describe your research idea"]', { clickCount: 3 });
     await page.type(
-      'textarea[placeholder*="Type your proposed project idea"]',
+      'textarea[placeholder*="Describe your research idea"]',
       'approximate nearest neighbor search on dense vectors using hnsw graphs'
     );
     await page.click('button[type="submit"]');

@@ -7,9 +7,9 @@ import PaperCard, { OpenAlexPaperItem } from '@/components/PaperCard';
 
 function DiscoverContent() {
   const searchParams = useSearchParams();
-  const initialQ = searchParams.get('q') || 'vector database similarity pgvector';
+  const urlQuery = searchParams.get('q') || '';
 
-  const [queryText, setQueryText] = useState(initialQ);
+  const [queryText, setQueryText] = useState(urlQuery);
   const [results, setResults] = useState<OpenAlexPaperItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -43,12 +43,18 @@ function DiscoverContent() {
     }
   }
 
-  // Trigger search on mount if query param present
+  // Trigger search on mount or URL change if query param present
   useEffect(() => {
-    if (initialQ && initialQ.trim()) {
-      handleSearch(initialQ);
+    const q = searchParams.get('q');
+    if (q && q.trim()) {
+      setQueryText(q);
+      handleSearch(q);
+    } else {
+      setQueryText('');
+      setResults([]);
     }
-  }, [initialQ]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
 
   async function handleSavePaper(paper: OpenAlexPaperItem) {
     setSavingId(paper.openalex_id || paper.title);
@@ -132,7 +138,7 @@ function DiscoverContent() {
               type="text"
               value={queryText}
               onChange={(e) => setQueryText(e.target.value)}
-              placeholder="Search by topic, paper title, author, or keyword..."
+              placeholder="Search research papers by topic, title, or keyword..."
               className="w-full pl-12 pr-4 py-3 rounded-xl bg-slate-950/80 border border-slate-700/80 text-sm text-white placeholder-slate-400 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-colors"
             />
           </div>
