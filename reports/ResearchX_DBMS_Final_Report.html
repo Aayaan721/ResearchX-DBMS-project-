@@ -1,0 +1,615 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>ResearchX — DBMS Mini-Project Report | Aayaan Kamil & Abhinav Das</title><meta name="viewport" content="width=device-width,initial-scale=1"><style>@page{size:A4;margin:19mm 18mm 18mm 21mm;@bottom-center{content:counter(page);font:10pt "Times New Roman";color:#555}}*{box-sizing:border-box}body{font-family:"Times New Roman",Georgia,serif;font-size:12pt;line-height:1.47;color:#171717;background:white;margin:0}main{max-width:850px;margin:auto}.no-print{background:#102840;color:white;padding:12px 20px;font:14px Arial;display:flex;justify-content:space-between;position:sticky;top:0;z-index:10}.no-print button{border:0;background:#e4f0fb;border-radius:5px;padding:9px 15px;font:bold 13px Arial;cursor:pointer}.cover,.frontpage{page-break-after:always;min-height:248mm;text-align:center;padding-top:7mm}.cover .uni{font-size:16pt;letter-spacing:.6px;font-weight:bold}.cover .mainTitle{font-size:20pt;line-height:1.4;font-weight:bold;margin:22mm 0 15mm}.cover .campus{font-size:10.5pt}.cover .logo{margin:12mm auto 0;width:72px;height:72px;border-radius:50%;border:3px double #304660;display:grid;place-items:center;font:bold 18px Georgia;color:#304660}.frontpage h1,.chapter h1{text-align:center;font-size:17pt;margin:4mm 0 15mm;line-height:1.4;font-weight:bold}.frontpage p{font-size:12pt;text-align:justify}.frontpage .certtext{margin:30mm auto 18mm;text-align:justify;line-height:1.8}.signature{display:flex;justify-content:space-between;margin-top:42mm;gap:30mm}.signature>div{width:44%;text-align:center;border-top:1px solid #333;padding-top:6px}.chapter{page-break-before:always}.chapter h1{margin:0 0 11mm}.chapter h2{text-align:left;font-size:14pt;margin:9mm 0 3mm}.chapter h3{text-align:left;font-size:12pt;margin:6mm 0 2mm}p{text-align:justify;margin:3mm 0 4mm}ul,ol{padding-left:8mm}li{margin:2mm 0;text-align:justify}a{color:#1e496e;overflow-wrap:anywhere}table{border-collapse:collapse;width:100%;margin:5mm 0;font-size:10pt;text-align:left}th,td{border:1px solid #666;padding:5px 6px;vertical-align:top;overflow-wrap:anywhere}th{background:#f0f2f4;font-weight:bold}.toc{font-size:12pt;margin-top:15mm}.toc td{padding:7px 9px}.toc a{color:#111;text-decoration:none}.tablewrap{break-inside:avoid;margin:5mm 0}.tblcap{text-align:center;font-size:10pt;font-style:italic;margin-top:2mm}pre.sql{font-family:"Consolas","Courier New",monospace;font-size:8.15pt;line-height:1.35;white-space:pre-wrap;overflow-wrap:anywhere;background:#f6f7f9;border:1px solid #cbd3da;padding:9px;page-break-inside:auto}.screenshot,.diagram{break-inside:avoid;margin:6mm 0 8mm;text-align:center}.screenshot img{width:100%;height:auto;max-height:185mm;object-fit:contain;border:1px solid #d2d7db}.diagram svg{width:100%;max-height:190mm}.screenshot figcaption,.diagram figcaption{font-size:10.5pt;font-style:italic;text-align:center;margin-top:2mm}.captionnote{font-size:10pt;color:#444}.small{font-size:10pt!important;color:#555}.cover p{text-align:center}.chapter:nth-of-type(1){page-break-before:always}@media print{.no-print{display:none!important}main{max-width:none}a{color:#111;text-decoration:none}.cover,.frontpage{min-height:250mm}figure img{max-width:100%}}</style></head><body><div class="no-print"><span>ResearchX • PES University DBMS Project • AUG–DEC 2026</span><button onclick="window.print()">Print / Save as PDF</button></div><main><section class="cover"><div class="uni">PES UNIVERSITY</div><div class="campus">(Established under Karnataka Act No. 16 of 2013)<br/>Electronic City, Hosur Road, Bengaluru – 560 100, Karnataka, India</div><div class="logo">PES</div><div style="margin-top:13mm;font-size:15pt">Mini Project Report on</div><div class="mainTitle">RESEARCHX<br/>INTELLIGENT RESEARCH DISCOVERY<br/>&amp; PROJECT SIMILARITY PLATFORM</div><p>Submitted in partial fulfilment of the requirements for the award of degree of</p><p style="font-size:15pt"><strong>Bachelor of Technology</strong><br/>in<br/><strong>Computer Science &amp; Engineering</strong></p><p><strong>UE23CS351A – DBMS Project</strong></p><p style="margin-top:9mm">Submitted by:</p><table style="border:0;width:78%;margin:auto;font-size:12pt"><tr><td style="border:0">Aayaan Kamil</td><td style="border:0">PES2UG24CS017</td></tr><tr><td style="border:0">Abhinav Das</td><td style="border:0">PES2UG24CS022</td></tr></table><p style="margin-top:7mm">under the guidance of</p><p><strong>Dr. Shilpa S</strong><br/>Assistant Professor<br/>PES University</p><p style="margin-top:15mm"><strong>AUG – DEC 2026</strong></p><p>DEPARTMENT OF COMPUTER SCIENCE AND ENGINEERING<br/>FACULTY OF ENGINEERING<br/>PES UNIVERSITY</p></section><section class="frontpage"><div class="uni" style="font-size:15pt"><strong>PES UNIVERSITY</strong></div><p style="text-align:center;font-size:10pt">(Established under Karnataka Act No. 16 of 2013)<br/>Electronic City, Hosur Road, Bengaluru – 560 100, Karnataka, India</p><h1 style="margin-top:25mm">CERTIFICATE</h1><div class="certtext"><p>This is to certify that the mini project entitled <strong>“ResearchX — Intelligent Research Discovery &amp; Project Similarity Platform”</strong> is a bonafide work carried out by <strong>Aayaan Kamil (PES2UG24CS017)</strong> and <strong>Abhinav Das (PES2UG24CS022)</strong>, in partial fulfilment for the completion of fifth-semester DBMS Project (UE24CSS351A) in the Programme of Study — Bachelor of Technology in Computer Science and Engineering — under the rules and regulations of PES University, Bengaluru, during the period AUG. 2026 – DEC. 2026.</p><p>It is certified that all corrections or suggestions indicated for internal assessment have been incorporated in the report. The project has been approved as it satisfies the fifth-semester academic requirements in respect of project work.</p></div><div style="margin:55mm auto 0;width:60%;border-top:1px solid #222;padding-top:4mm"><strong>Signature</strong><br/>Dr. Shilpa S<br/>Assistant Professor<br/>PES University</div></section><section class="frontpage"><h1>DECLARATION</h1><div class="certtext"><p>We hereby declare that the DBMS Project entitled <strong>“ResearchX — Intelligent Research Discovery &amp; Project Similarity Platform”</strong> has been carried out by us under the guidance of <strong>Dr. Shilpa S, Assistant Professor</strong>, and submitted in partial fulfilment of the course requirements for the award of the degree of Bachelor of Technology in Computer Science and Engineering of PES University, Bengaluru, during the academic semester AUG – DEC 2026.</p><p>We further declare that this report reflects the work and evidence represented by our project implementation, database scripts and documented tests.</p></div><div class="signature"><div>Aayaan Kamil<br/>PES2UG24CS017<br/><em>Student signature</em></div><div>Abhinav Das<br/>PES2UG24CS022<br/><em>Student signature</em></div></div></section><section class="frontpage"><h1>ACKNOWLEDGEMENT</h1><p style="margin-top:20mm">We would like to express our sincere gratitude to <strong>Dr. Shilpa S</strong>, Assistant Professor, Department of Computer Science and Engineering, PES University, for her guidance, assistance and encouragement throughout the development of our UE23CS351A – DBMS Project.</p><p>We take this opportunity to thank <strong>Dr. Sandesh B J</strong>, Chairperson, Department of Computer Science and Engineering, PES University, for the knowledge and support provided by the department.</p><p>We are grateful to <strong>Prof. Jawahar Doreswamy</strong>, Chancellor, PES University, and <strong>Dr. Suryaprasad J</strong>, Vice-Chancellor, PES University, for providing opportunities and an academic environment that supported this work.</p><p>Finally, we thank our families, friends and peers for their encouragement and cooperation during the development of ResearchX.</p></section><section class="frontpage"><h1>ABSTRACT</h1><div style="text-align:left;margin-top:17mm"><p>ResearchX is a database-centered platform designed to help students discover research literature, maintain university project records and explore semantic similarity between research topics. A conventional keyword search can miss relevant content when descriptions use different words for related concepts. ResearchX integrates a normalized PostgreSQL database with vector-based text comparison to address this gap.</p><p>The relational schema comprises 11 tables representing user roles, application users, research domains, student projects, project-domain associations, academic papers, authors, paper-author associations, faculty reviews, audit records and embedding references. The implementation uses primary/foreign keys, composite keys, unique and check constraints, indexes, stored functions, a faculty-review procedure, transaction handling and database triggers to demonstrate core DBMS concepts.</p><p>A 384-dimensional MiniLM encoder transforms research text into numerical vectors stored in PostgreSQL through pgvector. Cosine-distance queries rank locally indexed projects and saved papers according to conceptual alignment. OpenAlex integration provides live literature search; selected papers and their authors can be persisted in the relational database. A responsive Next.js/TypeScript interface supports browsing, project submission, review workflows and similarity search.</p><p>The project includes implementation scripts, SQL execution evidence, and automated verification of API, database and browser workflows. The platform is an academic demonstration, and its similarity scores are not plagiarism or originality judgments. The overall outcome is a practical integration of relational database design, advanced SQL programming and semantic retrieval in a single research-oriented application.</p><p><strong>Keywords:</strong> DBMS, PostgreSQL, ER model, relational mapping, pgvector, MiniLM, cosine similarity, OpenAlex, Next.js.</p></div></section><section class="frontpage" id="contents"><h1>TABLE OF CONTENTS</h1><table class="toc"><thead><tr><th>Chapter No.</th><th>Title</th></tr></thead><tbody><tr><td>1</td><td><a href="#ch1">INTRODUCTION</a></td></tr><tr><td>2</td><td><a href="#ch2">PROBLEM DEFINITION</a></td></tr><tr><td>3</td><td><a href="#ch3">ER MODEL</a></td></tr><tr><td>4</td><td><a href="#ch4">ER TO RELATIONAL MAPPING</a></td></tr><tr><td>5</td><td><a href="#ch5">DDL STATEMENTS</a></td></tr><tr><td>6</td><td><a href="#ch6">DML STATEMENTS</a></td></tr><tr><td>7</td><td><a href="#ch7">QUERIES</a></td></tr><tr><td>8</td><td><a href="#ch8">STORED PROCEDURES, FUNCTIONS AND TRIGGERS</a></td></tr><tr><td>9</td><td><a href="#ch9">FRONT END DEVELOPMENT</a></td></tr><tr><td>—</td><td><a href="#references">REFERENCES / BIBLIOGRAPHY</a></td></tr><tr><td>—</td><td><a href="#appendix">APPENDIX A — DEFINITIONS, ACRONYMS AND ABBREVIATIONS</a></td></tr></tbody></table><p class="small">For accurate printed page numbers, open the final document in Word and update or insert its table of contents after pagination.</p></section><section class="frontpage"><h1>LIST OF TABLES</h1><table><thead><tr><th>Table No.</th><th>Title</th></tr></thead><tbody><tr><td>1</td><td>ResearchX relations, keys and main integrity constraints.</td></tr><tr><td>2</td><td>Conceptual cardinalities and relational mapping.</td></tr><tr><td>3</td><td>Point-in-time database row counts in repository execution evidence (31 October 2026).</td></tr><tr><td>4</td><td>Frontend routes and connected DBMS workflows.</td></tr><tr><td>5</td><td>System requirements addressed by the implementation.</td></tr><tr><td>6</td><td>Terminology and abbreviations used throughout this report.</td></tr></tbody></table><h1 style="margin-top:18mm">LIST OF FIGURES</h1><table><thead><tr><th>Figure No.</th><th>Title</th></tr></thead><tbody><tr><td>1</td><td>Application architecture: Next.js, OpenAlex, local MiniLM and PostgreSQL/pgvector.</td></tr><tr><td>2</td><td>Chen-style conceptual ER representation of major ResearchX entities and relationships.</td></tr><tr><td>3</td><td>Complete 11-table relational schema, with primary keys, foreign keys and unique constraints.</td></tr><tr><td>4</td><td>ResearchX homepage and research-discovery dashboard.</td></tr><tr><td>5</td><td>SQL execution evidence showing relational table data and row counts.</td></tr><tr><td>6</td><td>DML proof: populated relations and SQL row counts in the saved evidence.</td></tr><tr><td>7</td><td>Execution evidence for GROUP BY, nested, correlated and multi-table JOIN queries.</td></tr><tr><td>8</td><td>pgvector cosine-distance SQL and HNSW index execution evidence.</td></tr><tr><td>9</td><td>Executed stored procedure, project trigger and audit-log results.</td></tr><tr><td>10</td><td>Transaction rollback and integrity verification evidence.</td></tr><tr><td>11</td><td>ResearchX homepage after UI redesign.</td></tr><tr><td>12</td><td>Project catalogue with search and research-domain/status filtering.</td></tr><tr><td>13</td><td>Project submission form and associated research-domain selection.</td></tr><tr><td>14</td><td>Project details, stored review information and related project workflow.</td></tr><tr><td>15</td><td>Project update interface and persistence verification.</td></tr><tr><td>16</td><td>Explore Literature page showing live OpenAlex results.</td></tr><tr><td>17</td><td>Locally saved research-paper catalogue.</td></tr><tr><td>18</td><td>Find Similar Research page showing semantic ranking from locally indexed vectors.</td></tr><tr><td>19</td><td>Mobile-responsive ResearchX homepage evidence.</td></tr></tbody></table></section><section class="chapter" id="ch1"><h1>1. INTRODUCTION</h1>
+<h2>1.1 Overview</h2>
+<p>ResearchX — Intelligent Research Discovery & Project Similarity Platform is a web-based academic research management application developed as a DBMS mini-project. It combines conventional relational data management with semantic retrieval so that students can register projects, browse related proposals, discover scholarly literature, save useful papers, and inspect conceptual similarity within a locally indexed collection.</p><p>Research topics are often described using different words even when they address related problems. A conventional title or keyword search may overlook this connection. ResearchX addresses this limitation using a 384-dimensional sentence embedding model together with PostgreSQL's pgvector extension while retaining relational integrity for users, projects, research domains, paper authorships, review decisions and audit histories.</p><p>The project uses PostgreSQL 16 as its primary DBMS, the pgvector extension for vector storage and cosine-distance retrieval, Next.js 14 and TypeScript for the application, Tailwind CSS for interface styling, OpenAlex for live academic literature discovery, and Xenova/all-MiniLM-L6-v2 for local embeddings.</p>
+<h2>1.2 Objectives</h2>
+<ul><li>Design and implement a normalized relational schema with primary keys, foreign keys, UNIQUE and CHECK constraints.</li><li>Map the conceptual ER model systematically to 11 implemented PostgreSQL relations.</li><li>Demonstrate DDL, DML, aggregation, nested and correlated queries, joins, procedures, functions and triggers.</li><li>Support project registration, status updates, faculty review and persistent audit records using transactional SQL.</li><li>Retrieve related local projects and saved papers using 384-dimensional embeddings and cosine similarity.</li><li>Retrieve live literature through OpenAlex and persist selected records with author associations.</li><li>Provide a usable browser interface for the principal database workflows.</li></ul>
+<h2>1.3 Scope and Boundaries</h2>
+<p>The platform's semantic search compares only the projects and research papers already indexed in its local database; OpenAlex search is a separate live discovery workflow. A cosine similarity score denotes vector-level conceptual alignment and does not establish plagiarism, originality or the statistical probability of duplication.</p><p>ResearchX uses seeded demonstration student and faculty profiles. Although the database stored procedure checks a reviewer's role, the public-facing demonstration does not implement a production authentication or authorization system. Therefore the application is intended for coursework demonstration and controlled use, not unsecured production deployment.</p>
+<h2>1.4 System Architecture</h2><figure class="diagram"><svg viewBox="0 0 890 330" xmlns="http://www.w3.org/2000/svg"><style>.a{font:18px Arial;fill:#15283d}.b{fill:#edf3f8;stroke:#667b8e;stroke-width:2}.l{stroke:#3f6683;stroke-width:2.5;fill:none}</style><rect class="b" x="20" y="110" width="165" height="98" rx="10"/><text class="a" x="102" y="150" text-anchor="middle">Next.js UI</text><text class="a" x="102" y="180" text-anchor="middle">Browser</text><path class="l" d="M185 160 H248"/><polygon points="245,153 260,160 245,167" fill="#3f6683"/><rect class="b" x="260" y="110" width="170" height="98" rx="10"/><text class="a" x="345" y="150" text-anchor="middle">API Routes</text><text class="a" x="345" y="180" text-anchor="middle">TypeScript</text><path class="l" d="M430 160 H485"/><polygon points="483,153 498,160 483,167" fill="#3f6683"/><rect class="b" x="499" y="110" width="172" height="98" rx="10"/><text class="a" x="585" y="145" text-anchor="middle">PostgreSQL</text><text class="a" x="585" y="172" text-anchor="middle">pgvector + HNSW</text><text class="a" x="585" y="194" text-anchor="middle" font-size="14">11 relational tables</text><path class="l" d="M343 110 V44 H760 V110"/><rect class="b" x="682" y="110" width="188" height="98" rx="10"/><text class="a" x="776" y="148" text-anchor="middle">OpenAlex API</text><text class="a" x="776" y="178" text-anchor="middle">Live discovery</text><path class="l" d="M345 208 V275 H585 V208"/><rect class="b" x="265" y="265" width="320" height="50" rx="10"/><text class="a" x="425" y="296" text-anchor="middle">MiniLM 384-dimensional embeddings</text></svg><figcaption>Figure 1. Application architecture: Next.js, OpenAlex, local MiniLM and PostgreSQL/pgvector.</figcaption></figure>
+<figure class="screenshot"><img src="https://raw.githubusercontent.com/Aayaan721/ResearchX-DBMS-project-/main/docs/evidence/screenshots/01_dashboard.png" alt="ResearchX homepage and research-discovery dashboard."/><figcaption>Figure 4. ResearchX homepage and research-discovery dashboard.</figcaption></figure>
+</section><section class="chapter" id="ch2"><h1>2. PROBLEM DEFINITION</h1>
+<h2>2.1 Problem Statement</h2>
+<p>Students developing academic projects need a reliable way to understand what has already been attempted, find supporting literature and recognize closely related proposals. These records are typically scattered across different lists or external websites, and a plain keyword comparison often fails to identify semantically similar descriptions.</p><p>A university project catalogue must also preserve accurate relationships among users, roles, projects, domains, research papers, authors and faculty reviews. Updates should remain consistent when multiple database records are created, modified or deleted.</p>
+<h2>2.2 Limitations of Existing Approaches</h2>
+<ul><li>Keyword-only matching does not consistently capture synonymy and paraphrased research ideas.</li><li>Manual tracking of projects and reviews can duplicate records and lose approval history.</li><li>Research papers and authors have many-to-many associations that are error-prone in denormalized storage.</li><li>Independent similarity indexes can drift out of sync with relational records after partial failures.</li><li>Unstructured forms and fragmented interfaces make search and project-review tasks harder to complete.</li></ul>
+<h2>2.3 Proposed Solution</h2>
+<p>ResearchX provides an integrated browser interface backed by a PostgreSQL schema. Users can register projects and assign multiple research domains; browse and save papers discovered through OpenAlex; store author associations; create review decisions; and search for related locally indexed records using MiniLM embeddings stored in pgvector.</p><p>PostgreSQL constraints enforce entity integrity, referential integrity and valid statuses. Stored procedures support coordinated faculty review operations, triggers maintain timestamps and audit logs, and transaction-based application writes help prevent relational records and vectors from becoming inconsistent.</p>
+<h2>2.4 Functional and Non-Functional Requirements</h2>
+<div class="tablewrap"><table><thead><tr><th>Category</th><th>Requirement</th></tr></thead><tbody><tr><td>Functional</td><td>Project CRUD, domain tagging and review history</td></tr><tr><td>Functional</td><td>Live OpenAlex literature discovery and paper saving</td></tr><tr><td>Functional</td><td>Locally indexed semantic project/paper comparison</td></tr><tr><td>Functional</td><td>Database audit trail and platform statistics</td></tr><tr><td>Integrity</td><td>Constraints, atomic transactions, role validation in review procedure</td></tr><tr><td>Usability</td><td>Responsive navigation, empty default search forms, clear result labels</td></tr><tr><td>Quality</td><td>Automated API, browser and transaction regression tests</td></tr></tbody></table><p class="tblcap">Table 5. System requirements addressed by the implementation.</p></div>
+</section><section class="chapter" id="ch3"><h1>3. ER MODEL</h1>
+<h2>3.1 Entity Identification</h2>
+<p>The conceptual model describes roles, users, projects, domains, papers, authors and review records. Two many-to-many relationships—project classification and paper authorship—are converted into associative relations. Operational support is provided by AUDIT_LOG and EMBEDDING_REF, giving the implemented schema a total of 11 relations.</p><p>Entity identifiers are represented by underlined key attributes. Rectangles indicate entity types, diamonds represent relationship types and ovals show representative key attributes. The diagrams follow the ER notation taught in the supplied PES University DBMS material while keeping all implemented relations consistent with the project SQL.</p>
+<figure class="diagram"><svg viewBox="0 0 980 690" role="img" aria-label="Chen style ER diagram of ResearchX" xmlns="http://www.w3.org/2000/svg">
+<style>.erT{font:17px Arial;fill:#222}.erS{font:14px Arial;fill:#222}.erA{fill:#fff;stroke:#222;stroke-width:2}.erE{fill:#f4f6f9;stroke:#222;stroke-width:2}.erR{fill:#fff;stroke:#222;stroke-width:2}.erL{stroke:#222;stroke-width:1.7;fill:none}.erD{stroke:#4f6075;stroke-width:1.6;stroke-dasharray:7 6;fill:none}</style>
+<text x="490" y="28" text-anchor="middle" font-size="19" font-family="Arial" font-weight="bold">RESEARCHX — CONCEPTUAL ENTITY–RELATIONSHIP MODEL</text>
+<!-- primary chain -->
+<rect class="erE" x="20" y="135" width="120" height="55"/><text class="erT" x="80" y="168" text-anchor="middle">ROLE</text>
+<polygon class="erR" points="191,135 235,162 191,190 147,162"/><text class="erS" x="191" y="166" text-anchor="middle">ASSIGNED</text>
+<rect class="erE" x="250" y="135" width="145" height="55"/><text class="erT" x="322" y="168" text-anchor="middle">APP_USER</text>
+<polygon class="erR" points="452,135 505,162 452,190 399,162"/><text class="erS" x="452" y="166" text-anchor="middle">SUBMITS</text>
+<rect class="erE" x="521" y="135" width="147" height="55"/><text class="erT" x="595" y="168" text-anchor="middle">PROJECT</text>
+<polygon class="erR" points="740,132 808,162 740,193 672,162"/><text class="erS" x="740" y="157" text-anchor="middle">CLASSIFIED</text><text class="erS" x="740" y="174" text-anchor="middle">IN</text>
+<rect class="erE" x="825" y="135" width="137" height="55"/><text class="erT" x="893" y="168" text-anchor="middle">DOMAIN</text>
+<path class="erL" d="M140 162 H147 M235 162 H250 M395 162 H399 M505 162 H521 M668 162 H672 M808 162 H825"/>
+<text class="erS" x="146" y="150">1</text><text class="erS" x="243" y="150">N</text><text class="erS" x="401" y="151">1</text><text class="erS" x="507" y="151">N</text><text class="erS" x="677" y="151">M</text><text class="erS" x="811" y="151">N</text>
+<!-- primary key ovals -->
+<ellipse class="erA" cx="79" cy="80" rx="70" ry="29"/><text class="erS" text-decoration="underline" x="79" y="84" text-anchor="middle">role_id (PK)</text><path class="erL" d="M79 109 V135"/>
+<ellipse class="erA" cx="322" cy="80" rx="80" ry="29"/><text class="erS" text-decoration="underline" x="322" y="84" text-anchor="middle">user_id (PK)</text><path class="erL" d="M322 109 V135"/>
+<ellipse class="erA" cx="593" cy="80" rx="90" ry="29"/><text class="erS" text-decoration="underline" x="593" y="84" text-anchor="middle">project_id (PK)</text><path class="erL" d="M593 109 V135"/>
+<ellipse class="erA" cx="894" cy="80" rx="75" ry="29"/><text class="erS" text-decoration="underline" x="894" y="84" text-anchor="middle">domain_id (PK)</text><path class="erL" d="M894 109 V135"/>
+<!-- review chain -->
+<rect class="erE" x="230" y="323" width="145" height="55"/><text class="erT" x="302" y="356" text-anchor="middle">APP_USER</text>
+<polygon class="erR" points="451,321 511,351 451,381 391,351"/><text class="erS" x="451" y="356" text-anchor="middle">WRITES</text>
+<rect class="erE" x="530" y="323" width="200" height="55"/><text class="erT" x="630" y="356" text-anchor="middle">PROJECT_REVIEW</text>
+<path class="erL" d="M375 351 H391 M511 351 H530 M630 323 V255 H595 V190"/><text class="erS" x="382" y="338">1</text><text class="erS" x="514" y="338">N</text><text class="erS" x="640" y="290">N:1 to PROJECT</text>
+<ellipse class="erA" cx="630" cy="435" rx="84" ry="28"/><text class="erS" x="630" y="439" text-anchor="middle" text-decoration="underline">review_id (PK)</text><path class="erL" d="M630 378 V407"/>
+<!-- paper author -->
+<rect class="erE" x="45" y="515" width="205" height="56"/><text class="erT" x="148" y="548" text-anchor="middle">RESEARCH_PAPER</text>
+<polygon class="erR" points="377,509 473,543 377,577 281,543"/><text class="erS" x="377" y="548" text-anchor="middle">AUTHORED_BY</text>
+<rect class="erE" x="504" y="515" width="151" height="56"/><text class="erT" x="580" y="548" text-anchor="middle">AUTHOR</text>
+<path class="erL" d="M250 543 H281 M473 543 H504"/><text class="erS" x="260" y="531">M</text><text class="erS" x="485" y="531">N</text>
+<ellipse class="erA" cx="147" cy="624" rx="91" ry="28"/><text class="erS" x="147" y="628" text-anchor="middle" text-decoration="underline">paper_id (PK)</text><path class="erL" d="M147 571 V596"/>
+<ellipse class="erA" cx="580" cy="624" rx="91" ry="28"/><text class="erS" x="580" y="628" text-anchor="middle" text-decoration="underline">author_id (PK)</text><path class="erL" d="M580 571 V596"/>
+<!-- supplemental operational entities -->
+<rect x="760" y="370" width="195" height="59" rx="4" fill="#fff9e9" stroke="#98762b" stroke-width="2" stroke-dasharray="6 4"/><text class="erT" x="857" y="396" text-anchor="middle">AUDIT_LOG</text><text class="erS" x="857" y="417" text-anchor="middle">operation history</text>
+<rect x="760" y="485" width="195" height="60" rx="4" fill="#fff9e9" stroke="#98762b" stroke-width="2" stroke-dasharray="6 4"/><text class="erT" x="857" y="510" text-anchor="middle">EMBEDDING_REF</text><text class="erS" x="857" y="532" text-anchor="middle">vector(384) index</text>
+<path class="erD" d="M760 399 H745 V250 H667"/><path class="erD" d="M760 515 H715 V605 H655"/><text class="erS" x="736" y="575" text-anchor="middle">logical entity reference</text>
+<text font-family="Arial" font-size="13" x="490" y="676" text-anchor="middle" fill="#555">Relationship tables PROJECT_DOMAIN and PAPER_AUTHOR implement the conceptual M:N relationships.</text>
+</svg><figcaption>Figure 2. Chen-style conceptual ER representation of major ResearchX entities and relationships.</figcaption></figure>
+<h2>3.2 Relationships, Participation and Cardinality</h2>
+<div class="tablewrap"><table><thead><tr><th>Conceptual relationship</th><th>Cardinality</th><th>Relational implementation</th></tr></thead><tbody><tr><td>ROLE–APP_USER</td><td>1:N</td><td>APP_USER.role_id (FK)</td></tr><tr><td>APP_USER–PROJECT (submits)</td><td>1:N</td><td>PROJECT.student_id (FK)</td></tr><tr><td>APP_USER–PROJECT (approves)</td><td>1:N, optional on project</td><td>PROJECT.approved_by (nullable FK)</td></tr><tr><td>PROJECT–DOMAIN</td><td>M:N</td><td>PROJECT_DOMAIN(project_id, domain_id)</td></tr><tr><td>RESEARCH_PAPER–AUTHOR</td><td>M:N</td><td>PAPER_AUTHOR(paper_id, author_id), author_order</td></tr><tr><td>PROJECT–PROJECT_REVIEW</td><td>1:N</td><td>PROJECT_REVIEW.project_id (FK)</td></tr><tr><td>APP_USER–PROJECT_REVIEW</td><td>1:N</td><td>PROJECT_REVIEW.faculty_id (FK)</td></tr></tbody></table><p class="tblcap">Table 2. Conceptual cardinalities and relational mapping.</p></div>
+<p>Each project must reference a submitting APP_USER, and each user must reference one ROLE. The optional approved_by attribute records a reviewing user where a project has been approved. Each PROJECT_REVIEW belongs to one project and one recorded reviewer; multiple reviews of the same project are possible.</p><p>The M:N project-to-domain and paper-to-author relationships require separate bridge relations. Each PAPER_AUTHOR entry also records author_order. Participation is controlled by NOT NULL constraints on dependent foreign keys where present; no additional total-participation constraints are assumed beyond what the implementation enforces.</p>
+<h2>3.3 Keys and Integrity</h2>
+<div class="tablewrap"><table><thead><tr><th>Relation</th><th>Primary key</th><th>Important relationships / constraints</th></tr></thead><tbody><tr><td>ROLE</td><td>role_id</td><td>Unique role_name; APP_USER references ROLE</td></tr><tr><td>APP_USER</td><td>user_id</td><td>role_id → ROLE; unique email and username</td></tr><tr><td>DOMAIN</td><td>domain_id</td><td>Unique domain_name</td></tr><tr><td>PROJECT</td><td>project_id</td><td>student_id and approved_by → APP_USER; status check</td></tr><tr><td>PROJECT_DOMAIN</td><td>(project_id, domain_id)</td><td>Composite PK, FKs to PROJECT and DOMAIN</td></tr><tr><td>RESEARCH_PAPER</td><td>paper_id</td><td>Unique OpenAlex ID and DOI when provided</td></tr><tr><td>AUTHOR</td><td>author_id</td><td>Optional unique OpenAlex author ID</td></tr><tr><td>PAPER_AUTHOR</td><td>(paper_id, author_id)</td><td>Composite PK, two foreign keys, author_order</td></tr><tr><td>PROJECT_REVIEW</td><td>review_id</td><td>project_id → PROJECT; faculty_id → APP_USER</td></tr><tr><td>AUDIT_LOG</td><td>log_id</td><td>Action, record_id and JSONB before/after data</td></tr><tr><td>EMBEDDING_REF</td><td>embedding_id</td><td>Unique (entity_type, entity_id); vector(384); logical polymorphic reference</td></tr></tbody></table><p class="tblcap">Table 1. ResearchX relations, keys and main integrity constraints.</p></div>
+<p>The polymorphic EMBEDDING_REF stores entity_type and entity_id for either a PROJECT or a RESEARCH_PAPER. It has a uniqueness constraint on that pair, but not a conventional FOREIGN KEY spanning two possible parent tables. Project/paper deletion handlers and database triggers provide cleanup of associated vectors. Audit log record identifiers similarly represent historical entity references rather than enforced foreign keys.</p>
+</section><section class="chapter" id="ch4"><h1>4. ER TO RELATIONAL MAPPING</h1>
+<h2>4.1 Steps of Algorithm for the Chosen Problem</h2>
+<h3>Step 1 — Mapping regular (strong) entity types</h3>
+<p>The strong entity sets ROLE, APP_USER, DOMAIN, PROJECT, RESEARCH_PAPER, AUTHOR and PROJECT_REVIEW become base relations with their own primary keys. AUDIT_LOG and EMBEDDING_REF are additional implementation relations. Every relation stores its simple attributes as defined by the SQL schema.</p>
+<h3>Step 2 — Mapping weak entity types</h3>
+<p>No weak entity with an identifying partial key is defined in the implemented ResearchX schema. Consequently, no weak-entity mapping transformation is applied. This is deliberate rather than adding an artificial weak entity.</p>
+<h3>Step 3 — Mapping binary 1:1 relationships</h3>
+<p>The implemented conceptual relationships do not require a distinct mandatory binary 1:1 mapping. Uniqueness in individual attributes, such as an OpenAlex identifier, should not be misrepresented as an entity-to-entity 1:1 relationship.</p>
+<h3>Step 4 — Mapping binary 1:N relationships</h3>
+<p>ROLE(1)–APP_USER(N) is implemented with APP_USER.role_id. APP_USER(1)–PROJECT(N) uses PROJECT.student_id. PROJECT(1)–PROJECT_REVIEW(N) uses PROJECT_REVIEW.project_id, and APP_USER(1)–PROJECT_REVIEW(N) uses faculty_id. PROJECT.approved_by is an optional foreign key to APP_USER.</p>
+<h3>Step 5 — Mapping binary M:N relationships</h3>
+<p>PROJECT and DOMAIN are connected through PROJECT_DOMAIN(project_id, domain_id), with a composite primary key and both fields foreign keys. RESEARCH_PAPER and AUTHOR are connected through PAPER_AUTHOR(paper_id, author_id), using the same composite-key technique plus author_order.</p>
+<h3>Step 6 — Mapping multivalued attributes</h3>
+<p>The implemented conceptual model does not use independent multivalued attributes requiring a dedicated mapping table. Repeating research domains and authors are represented as relationships with their own association tables, not comma-separated attribute values.</p>
+<h3>Step 7 — Mapping n-ary relationships</h3>
+<p>No ternary or higher-order relationship type is required by this design. The two-entity mappings and review entity cover the implemented requirements.</p>
+<h2>4.2 Complete Diagram of Relational Mapping</h2><figure class="diagram"><svg viewBox="0 0 950 660" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Complete logical relational schema of ResearchX">
+<style>.m{font:13px Arial;fill:#222}.mh{font:bold 16px Arial;fill:#132333}.box{fill:#fafbfc;stroke:#52677d;stroke-width:1.5}.hdr{fill:#e8eff6}.ln{stroke:#52677d;stroke-width:1.5;fill:none}</style>
+<text x="475" y="25" text-anchor="middle" font-family="Arial" font-size="19" font-weight="bold">RESEARCHX — 11-TABLE RELATIONAL SCHEMA</text>
+<rect class="box" x="15" y="52" width="215" height="130" rx="6"/><rect class="hdr" x="16" y="53" width="213" height="34" rx="5"/><text class="mh" x="25" y="75">ROLE</text><text class="m" x="25" y="109">PK role_id</text><text class="m" x="25" y="130">UQ role_name</text><rect class="box" x="249" y="52" width="215" height="130" rx="6"/><rect class="hdr" x="250" y="53" width="213" height="34" rx="5"/><text class="mh" x="259" y="75">APP_USER</text><text class="m" x="259" y="109">PK user_id</text><text class="m" x="259" y="130">FK role_id &#8594; ROLE</text><text class="m" x="259" y="151">UQ email, username</text><rect class="box" x="483" y="52" width="215" height="130" rx="6"/><rect class="hdr" x="484" y="53" width="213" height="34" rx="5"/><text class="mh" x="493" y="75">PROJECT</text><text class="m" x="493" y="109">PK project_id</text><text class="m" x="493" y="130">FK student_id &#8594; APP_USER</text><text class="m" x="493" y="151">FK approved_by &#8594; APP_USER</text><rect class="box" x="717" y="52" width="215" height="130" rx="6"/><rect class="hdr" x="718" y="53" width="213" height="34" rx="5"/><text class="mh" x="727" y="75">PROJECT_DOMAIN</text><text class="m" x="727" y="109">PK/FK project_id &#8594; PROJECT</text><text class="m" x="727" y="130">PK/FK domain_id &#8594; DOMAIN</text><rect class="box" x="15" y="225" width="215" height="130" rx="6"/><rect class="hdr" x="16" y="226" width="213" height="34" rx="5"/><text class="mh" x="25" y="248">DOMAIN</text><text class="m" x="25" y="282">PK domain_id</text><text class="m" x="25" y="303">UQ domain_name</text><rect class="box" x="249" y="225" width="215" height="130" rx="6"/><rect class="hdr" x="250" y="226" width="213" height="34" rx="5"/><text class="mh" x="259" y="248">PROJECT_REVIEW</text><text class="m" x="259" y="282">PK review_id</text><text class="m" x="259" y="303">FK project_id &#8594; PROJECT</text><text class="m" x="259" y="324">FK faculty_id &#8594; APP_USER</text><rect class="box" x="483" y="225" width="215" height="130" rx="6"/><rect class="hdr" x="484" y="226" width="213" height="34" rx="5"/><text class="mh" x="493" y="248">RESEARCH_PAPER</text><text class="m" x="493" y="282">PK paper_id</text><text class="m" x="493" y="303">UQ openalex_id, doi</text><rect class="box" x="717" y="225" width="215" height="130" rx="6"/><rect class="hdr" x="718" y="226" width="213" height="34" rx="5"/><text class="mh" x="727" y="248">PAPER_AUTHOR</text><text class="m" x="727" y="282">PK/FK paper_id &#8594; RESEARCH_PAPER</text><text class="m" x="727" y="303">PK/FK author_id &#8594; AUTHOR</text><rect class="box" x="15" y="398" width="215" height="130" rx="6"/><rect class="hdr" x="16" y="399" width="213" height="34" rx="5"/><text class="mh" x="25" y="421">AUTHOR</text><text class="m" x="25" y="455">PK author_id</text><text class="m" x="25" y="476">UQ openalex_id</text><rect class="box" x="249" y="398" width="215" height="130" rx="6"/><rect class="hdr" x="250" y="399" width="213" height="34" rx="5"/><text class="mh" x="259" y="421">AUDIT_LOG</text><text class="m" x="259" y="455">PK log_id</text><text class="m" x="259" y="476">JSONB old_values, new_values</text><text class="m" x="259" y="497">record_id (audit reference)</text><rect class="box" x="483" y="398" width="215" height="130" rx="6"/><rect class="hdr" x="484" y="399" width="213" height="34" rx="5"/><text class="mh" x="493" y="421">EMBEDDING_REF</text><text class="m" x="493" y="455">PK embedding_id</text><text class="m" x="493" y="476">UQ (entity_type, entity_id)</text><text class="m" x="493" y="497">embedding vector(384)</text>
+<text x="20" y="582" font-size="15" font-family="Arial">PK = primary key; FK = foreign key; UQ = unique constraint.</text>
+<text x="20" y="606" font-size="14" font-family="Arial">PROJECT_DOMAIN and PAPER_AUTHOR carry composite PKs.</text>
+<text x="20" y="630" font-size="14" font-family="Arial">EMBEDDING_REF uses a polymorphic logical reference rather than SQL FOREIGN KEY.</text>
+</svg><figcaption>Figure 3. Complete 11-table relational schema, with primary keys, foreign keys and unique constraints.</figcaption></figure>
+<h2>4.3 Relational Schema Notation</h2>
+<pre class="sql">ROLE(role_id PK, role_name UNIQUE)
+APP_USER(user_id PK, username UNIQUE, password_hash, full_name, email UNIQUE, role_id FK, created_at)
+DOMAIN(domain_id PK, domain_name UNIQUE, description)
+PROJECT(project_id PK, student_id FK, title, problem_statement, description, status, approved_by FK, created_at, updated_at)
+PROJECT_DOMAIN(project_id PK/FK, domain_id PK/FK)
+RESEARCH_PAPER(paper_id PK, openalex_id UNIQUE, title, abstract, keywords, doi UNIQUE, file_url, published_in, year, cited_by_count, created_at)
+AUTHOR(author_id PK, openalex_id UNIQUE, name, affiliation, email)
+PAPER_AUTHOR(paper_id PK/FK, author_id PK/FK, author_order)
+PROJECT_REVIEW(review_id PK, project_id FK, faculty_id FK, decision, comments, review_date)
+AUDIT_LOG(log_id PK, table_name, action, record_id, old_values, new_values, changed_at)
+EMBEDDING_REF(embedding_id PK, entity_type, entity_id, embedding VECTOR(384), model, created_at)</pre>
+</section><section class="chapter" id="ch5"><h1>5. DDL STATEMENTS</h1>
+<h2>5.1 Database Creation and Extension</h2>
+<p>PostgreSQL 16 and pgvector are used for the same relational database. The pgvector extension introduces the VECTOR type, allowing dense vectors to be stored alongside conventional entities. The original setup SQL contains DROP TABLE statements for clean-room initialization; those destructive initialization statements are intentionally excluded from the report's reproduction examples to prevent accidental deletion of a populated database.</p>
+<pre class="sql">CREATE EXTENSION IF NOT EXISTS vector;</pre>
+<h2>5.2 CREATE TABLE Statements for All 11 Relations</h2>
+<p>The following definitions are taken from the final ResearchX source file database/schema.sql. The creation order follows referential dependencies.</p>
+<h3>5.2.1 ROLE</h3><pre class="sql">CREATE TABLE role (
+    role_id SMALLINT PRIMARY KEY,
+    role_name VARCHAR(30) NOT NULL UNIQUE,
+    CHECK (role_name IN ('Admin', 'Student', 'Faculty'))
+);</pre><h3>5.2.2 APP_USER</h3><pre class="sql">CREATE TABLE app_user (
+    user_id SERIAL PRIMARY KEY,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    password_hash VARCHAR(255) NOT NULL,
+    full_name VARCHAR(100) NOT NULL,
+    email VARCHAR(120) NOT NULL UNIQUE,
+    role_id SMALLINT NOT NULL REFERENCES role(role_id),
+    created_at TIMESTAMP NOT NULL DEFAULT NOW()
+);</pre><h3>5.2.3 DOMAIN</h3><pre class="sql">CREATE TABLE domain (
+    domain_id SERIAL PRIMARY KEY,
+    domain_name VARCHAR(150) NOT NULL UNIQUE,
+    description TEXT
+);</pre><h3>5.2.4 PROJECT</h3><pre class="sql">CREATE TABLE project (
+    project_id SERIAL PRIMARY KEY,
+    student_id INTEGER NOT NULL REFERENCES app_user(user_id) ON DELETE CASCADE,
+    title VARCHAR(300) NOT NULL,
+    problem_statement TEXT NOT NULL,
+    description TEXT,
+    status VARCHAR(30) NOT NULL DEFAULT 'Pending',
+    approved_by INTEGER REFERENCES app_user(user_id) ON DELETE SET NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
+    CHECK (status IN ('Pending', 'Approved', 'Rejected'))
+);</pre><h3>5.2.5 PROJECT_DOMAIN</h3><pre class="sql">CREATE TABLE project_domain (
+    project_id INTEGER NOT NULL REFERENCES project(project_id) ON DELETE CASCADE,
+    domain_id INTEGER NOT NULL REFERENCES domain(domain_id) ON DELETE CASCADE,
+    PRIMARY KEY (project_id, domain_id)
+);</pre><h3>5.2.6 RESEARCH_PAPER</h3><pre class="sql">CREATE TABLE research_paper (
+    paper_id SERIAL PRIMARY KEY,
+    openalex_id VARCHAR(100) UNIQUE,
+    title VARCHAR(500) NOT NULL,
+    abstract TEXT,
+    keywords TEXT,
+    doi VARCHAR(255) UNIQUE,
+    file_url VARCHAR(500),
+    published_in VARCHAR(255),
+    year SMALLINT,
+    cited_by_count INTEGER NOT NULL DEFAULT 0,
+    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+    CHECK (cited_by_count &gt;= 0)
+);</pre><h3>5.2.7 AUTHOR</h3><pre class="sql">CREATE TABLE author (
+    author_id SERIAL PRIMARY KEY,
+    openalex_id VARCHAR(150) UNIQUE,
+    name VARCHAR(150) NOT NULL,
+    affiliation VARCHAR(255),
+    email VARCHAR(120)
+);</pre><h3>5.2.8 PAPER_AUTHOR</h3><pre class="sql">CREATE TABLE paper_author (
+    paper_id INTEGER NOT NULL REFERENCES research_paper(paper_id) ON DELETE CASCADE,
+    author_id INTEGER NOT NULL REFERENCES author(author_id) ON DELETE CASCADE,
+    author_order SMALLINT NOT NULL DEFAULT 1,
+    PRIMARY KEY (paper_id, author_id)
+);</pre><h3>5.2.9 PROJECT_REVIEW</h3><pre class="sql">CREATE TABLE project_review (
+    review_id SERIAL PRIMARY KEY,
+    project_id INTEGER NOT NULL REFERENCES project(project_id) ON DELETE CASCADE,
+    faculty_id INTEGER NOT NULL REFERENCES app_user(user_id) ON DELETE CASCADE,
+    decision VARCHAR(30) NOT NULL,
+    comments TEXT,
+    review_date TIMESTAMP NOT NULL DEFAULT NOW(),
+    CHECK (decision IN ('Approved', 'Rejected', 'Changes Required'))
+);</pre><h3>5.2.10 AUDIT_LOG</h3><pre class="sql">CREATE TABLE audit_log (
+    log_id SERIAL PRIMARY KEY,
+    table_name VARCHAR(50) NOT NULL,
+    action VARCHAR(20) NOT NULL,
+    record_id INTEGER NOT NULL,
+    old_values JSONB,
+    new_values JSONB,
+    changed_at TIMESTAMP NOT NULL DEFAULT NOW()
+);</pre><h3>5.2.11 EMBEDDING_REF</h3><pre class="sql">CREATE TABLE embedding_ref (
+    embedding_id SERIAL PRIMARY KEY,
+    entity_type VARCHAR(30) NOT NULL,
+    entity_id INTEGER NOT NULL,
+    embedding vector(384) NOT NULL,
+    model VARCHAR(150) NOT NULL DEFAULT 'Xenova/all-MiniLM-L6-v2',
+    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+    CHECK (entity_type IN ('PROJECT', 'RESEARCH_PAPER')),
+    UNIQUE (entity_type, entity_id)
+);</pre>
+<h2>5.3 Indexes and Query Performance</h2>
+<pre class="sql">-- Indexes for Relational Performance &amp; Vector Retrieval
+-- ----------------------------------------------------------------------------
+CREATE INDEX idx_project_student ON project(student_id);
+CREATE INDEX idx_project_status ON project(status);
+CREATE INDEX idx_paper_year ON research_paper(year);
+CREATE INDEX idx_paper_openalex ON research_paper(openalex_id);
+CREATE INDEX idx_embedding_entity ON embedding_ref(entity_type, entity_id);
+CREATE INDEX idx_audit_table ON audit_log(table_name, record_id);
+
+-- HNSW Vector Index for efficient approximate nearest-neighbor cosine queries
+CREATE INDEX idx_embedding_vector_hnsw ON embedding_ref 
+USING hnsw (embedding vector_cosine_ops)
+WITH (m = 16, ef_construction = 64);</pre>
+<p>The relational indexes accelerate commonly filtered columns including project status and student ID, while idx_embedding_vector_hnsw applies Hierarchical Navigable Small World indexing with vector_cosine_ops to the 384-dimensional embedding column.</p><p>The index supports efficient approximate nearest-neighbor retrieval. An approximate index trades some recall for improved search performance and does not alter the stored similarity definition.</p>
+<figure class="screenshot"><img src="https://raw.githubusercontent.com/Aayaan721/ResearchX-DBMS-project-/main/docs/evidence/screenshots/09_sql_table_data_and_counts.png" alt="SQL execution evidence showing relational table data and row counts."/><figcaption>Figure 5. SQL execution evidence showing relational table data and row counts.</figcaption></figure>
+</section><section class="chapter" id="ch6"><h1>6. DML STATEMENTS</h1>
+<h2>6.1 Data Insertion</h2>
+<p>DML operations populate the relational tables in dependency order. Sample rows include roles, seeded demonstration users, research domains, projects, related papers, authors, association tables and faculty reviews.</p><p>The SQL shown below is an extract from database/seed.sql, and includes the ON CONFLICT clauses used to keep seed operations repeat-safe where supported.</p>
+<pre class="sql">INSERT INTO role (role_id, role_name) VALUES
+(1, 'Admin'), (2, 'Student'), (3, 'Faculty')
+ON CONFLICT (role_id) DO NOTHING;
+
+INSERT INTO domain (domain_id, domain_name, description) VALUES
+(1, 'Artificial Intelligence &amp; Machine Learning', 'Core deep learning architectures, representation learning, and neural network optimization.'),
+(3, 'Database Systems &amp; Vector Retrieval', 'Relational database engines, nearest-neighbor indexing, query optimization, and storage management.')
+ON CONFLICT (domain_id) DO NOTHING;
+
+INSERT INTO project_domain (project_id, domain_id)
+VALUES (1, 1), (1, 3)
+ON CONFLICT (project_id, domain_id) DO NOTHING;</pre>
+<h2>6.2 Retrieval of Inserted Records</h2>
+<pre class="sql">SELECT user_id, username, full_name, role_id FROM app_user ORDER BY user_id;
+SELECT project_id, title, status, student_id FROM project ORDER BY project_id;
+SELECT paper_id, title, year, cited_by_count FROM research_paper ORDER BY paper_id;
+SELECT * FROM fn_get_platform_stats();</pre>
+<div class="tablewrap"><table><thead><tr><th>Relation</th><th>Recorded rows</th></tr></thead><tbody><tr><td>role</td><td>3</td></tr><tr><td>app_user</td><td>5</td></tr><tr><td>domain</td><td>6</td></tr><tr><td>project</td><td>7</td></tr><tr><td>project_domain</td><td>14</td></tr><tr><td>research_paper</td><td>6</td></tr><tr><td>author</td><td>10</td></tr><tr><td>paper_author</td><td>10</td></tr><tr><td>project_review</td><td>5</td></tr><tr><td>audit_log</td><td>14</td></tr><tr><td>embedding_ref</td><td>11</td></tr></tbody></table><p class="tblcap">Table 3. Point-in-time database row counts in repository execution evidence (31 October 2026).</p></div>
+<p>These are point-in-time counts from repository evidence, not a promise that the live database will retain exactly the same totals after users insert or delete more records.</p>
+<h2>6.3 UPDATE and DELETE as DML Operations</h2>
+<pre class="sql">BEGIN;
+SAVEPOINT demo_changes;
+UPDATE project
+SET description = 'Revised demonstration description'
+WHERE project_id = 1;
+SELECT project_id, description FROM project WHERE project_id = 1;
+ROLLBACK TO SAVEPOINT demo_changes;
+COMMIT;</pre>
+<p>For deletion demonstrations, the project's test script operates on temporary test records and verifies cleanup. A source example deletes project_id = 999 and its saved output shows DELETE 0; therefore that specific output demonstrates SQL execution syntax, not a successfully removed existing row. The platform integration tests separately exercised real create/delete workflows.</p>
+<figure class="screenshot"><img src="https://raw.githubusercontent.com/Aayaan721/ResearchX-DBMS-project-/main/docs/evidence/screenshots/09_sql_table_data_and_counts.png" alt="DML proof: populated relations and SQL row counts in the saved evidence."/><figcaption>Figure 6. DML proof: populated relations and SQL row counts in the saved evidence.</figcaption></figure>
+</section><section class="chapter" id="ch7"><h1>7. QUERIES</h1>
+<h2>7.1 Simple Query with GROUP BY, Aggregate Functions and HAVING</h2>
+<p>This query computes the count of projects per domain, their approval statuses and average problem-statement length. LEFT JOIN preserves research domains that have no projects.</p>
+<pre class="sql">SELECT 
+    d.domain_id,
+    d.domain_name,
+    COUNT(pd.project_id) AS total_projects,
+    COUNT(CASE WHEN p.status = 'Approved' THEN 1 END) AS approved_projects,
+    COUNT(CASE WHEN p.status = 'Pending' THEN 1 END) AS pending_projects,
+    ROUND(AVG(LENGTH(p.problem_statement)), 2) AS avg_problem_statement_chars
+FROM domain d
+LEFT JOIN project_domain pd ON d.domain_id = pd.domain_id
+LEFT JOIN project p ON pd.project_id = p.project_id
+GROUP BY d.domain_id, d.domain_name
+HAVING COUNT(pd.project_id) &gt;= 0
+ORDER BY total_projects DESC, d.domain_name ASC;</pre>
+<p>Recorded output: six research domains were returned. The Artificial Intelligence & Machine Learning domain had six project-domain assignments at the time of evidence capture.</p>
+<h2>7.2 UPDATE Operation</h2>
+<pre class="sql">UPDATE project
+SET 
+    problem_statement = 'Updated: Scaling dense vector embeddings for low-latency similarity search across millions of student research repositories using HNSW graphs.',
+    updated_at = NOW()
+WHERE project_id = 1;</pre>
+<p>The saved SQL output reports UPDATE 1. The update modifies the chosen project row and its update timestamp, and the project's timestamp trigger enforces updated_at automatically.</p>
+<h2>7.3 DELETE Operation</h2>
+<pre class="sql">DELETE FROM project
+WHERE project_id = 999;</pre>
+<p>The saved SQL output is DELETE 0 because this demonstration identifier was not present. Real deletion with cascading cleanup is covered by the platform integration test and associated screenshot, not falsely attributed to this zero-row statement.</p>
+<h2>7.4 Correlated Query</h2>
+<p>For each paper, the correlated subquery determines the average citation count for that paper's publication year. The outer query selects papers exceeding their own yearly cohort average.</p>
+<pre class="sql">SELECT 
+    rp.paper_id,
+    rp.title,
+    rp.year,
+    rp.cited_by_count,
+    ROUND((
+        SELECT AVG(sub.cited_by_count)
+        FROM research_paper sub
+        WHERE sub.year = rp.year
+    ), 2) AS cohort_avg_citations
+FROM research_paper rp
+WHERE rp.cited_by_count &gt; (
+    SELECT AVG(sub.cited_by_count)
+    FROM research_paper sub
+    WHERE sub.year = rp.year
+)
+ORDER BY rp.year DESC, rp.cited_by_count DESC;</pre>
+<p>In the saved output, the HNSW graph paper was above its 2020 cohort mean, with 3,100 citations versus a recorded cohort average of 2,480.</p>
+<h2>7.5 Nested Query</h2>
+<p>Two nested IN subqueries find students who own approved projects in the AI/ML research categories. The database performs filtering across APP_USER, PROJECT, PROJECT_DOMAIN and DOMAIN without duplicating user records.</p>
+<pre class="sql">SELECT 
+    u.user_id,
+    u.username,
+    u.full_name,
+    u.email
+FROM app_user u
+WHERE u.user_id IN (
+    SELECT p.student_id
+    FROM project p
+    WHERE p.status = 'Approved'
+      AND p.project_id IN (
+          SELECT pd.project_id
+          FROM project_domain pd
+          JOIN domain d ON pd.domain_id = d.domain_id
+          WHERE d.domain_name ILIKE '%Artificial Intelligence%'
+             OR d.domain_name ILIKE '%Machine Learning%'
+      )
+);</pre>
+<p>The recorded sample output contained two demonstration student profiles.</p>
+<h2>7.6 Additional Multi-Table JOIN</h2>
+<p>A multi-table query joins the projects to student users, research-domain mappings, optional faculty reviewers, review decisions and embedding availability. STRING_AGG combines a project's multiple domain names into a readable result.</p>
+<pre class="sql">SELECT 
+    p.project_id,
+    p.title,
+    p.status,
+    u_student.full_name AS student_name,
+    u_student.email AS student_email,
+    STRING_AGG(DISTINCT d.domain_name, ', ') AS domains,
+    u_faculty.full_name AS reviewed_by_faculty,
+    pr.decision AS review_decision,
+    pr.comments AS review_comments,
+    CASE WHEN er.embedding_id IS NOT NULL THEN 'Indexed (384-d)' ELSE 'Pending Vector' END AS vector_status,
+    p.created_at
+FROM project p
+JOIN app_user u_student ON p.student_id = u_student.user_id
+LEFT JOIN project_domain pd ON p.project_id = pd.project_id
+LEFT JOIN domain d ON pd.domain_id = d.domain_id
+LEFT JOIN app_user u_faculty ON p.approved_by = u_faculty.user_id
+LEFT JOIN project_review pr ON p.project_id = pr.project_id
+LEFT JOIN embedding_ref er ON p.project_id = er.entity_id AND er.entity_type = 'PROJECT'
+GROUP BY 
+    p.project_id, 
+    p.title, 
+    p.status, 
+    u_student.full_name, 
+    u_student.email, 
+    u_faculty.full_name, 
+    pr.decision, 
+    pr.comments, 
+    er.embedding_id, 
+    p.created_at
+ORDER BY p.project_id ASC;</pre>
+<figure class="screenshot"><img src="https://raw.githubusercontent.com/Aayaan721/ResearchX-DBMS-project-/main/docs/evidence/screenshots/10_sql_joins_and_subqueries.png" alt="Execution evidence for GROUP BY, nested, correlated and multi-table JOIN queries."/><figcaption>Figure 7. Execution evidence for GROUP BY, nested, correlated and multi-table JOIN queries.</figcaption></figure>
+<h2>7.7 pgvector Similarity Query (Additional DBMS Feature)</h2>
+<p>ResearchX computes cosine similarity as 1 − cosine distance; PostgreSQL's <=> operator returns cosine distance. Query parameters carry the 384-dimensional input embedding. Stored vectors may represent projects or locally saved papers.</p>
+<pre class="sql">SELECT 
+    p.project_id,
+    p.title,
+    p.problem_statement,
+    p.status,
+    u.full_name AS student_name,
+    STRING_AGG(DISTINCT d.domain_name, ', ') AS domains,
+    ROUND((1 - (er.embedding &lt;=&gt; $1::vector))::numeric, 4) AS similarity_score
+FROM embedding_ref er
+JOIN project p ON er.entity_type = 'PROJECT' AND er.entity_id = p.project_id
+JOIN app_user u ON p.student_id = u.user_id
+LEFT JOIN project_domain pd ON p.project_id = pd.project_id
+LEFT JOIN domain d ON pd.domain_id = d.domain_id
+GROUP BY p.project_id, p.title, p.problem_statement, p.status, u.full_name, er.embedding
+ORDER BY er.embedding &lt;=&gt; $1::vector ASC
+LIMIT 5;</pre>
+<p>An independent repository evidence capture ranked GraphDB-Scale at 0.3515 and BioMedQA at 0.3504 similarity relative to ResearchX's own project vector. These are values observed in one database snapshot, not fixed scores for all queries or models.</p>
+<figure class="screenshot"><img src="https://raw.githubusercontent.com/Aayaan721/ResearchX-DBMS-project-/main/docs/evidence/screenshots/12_sql_pgvector_cosine_similarity.png" alt="pgvector cosine-distance SQL and HNSW index execution evidence."/><figcaption>Figure 8. pgvector cosine-distance SQL and HNSW index execution evidence.</figcaption></figure>
+</section><section class="chapter" id="ch8"><h1>8. STORED PROCEDURES, FUNCTIONS AND TRIGGERS</h1>
+<h2>8.1 Stored Procedure: Faculty Project Review</h2>
+<p>The stored procedure sp_review_and_approve_project checks that the project exists and that the nominated reviewer has a Faculty or Admin role, then inserts a review and updates the project status in a single database transaction context. Its actions also activate the audit trigger.</p><p>The following script is the final version of the stored-procedure, function and trigger definitions in database/procedures_triggers.sql.</p>
+<pre class="sql">CREATE OR REPLACE PROCEDURE sp_review_and_approve_project(
+    p_project_id INTEGER,
+    p_faculty_id INTEGER,
+    p_decision VARCHAR(30),
+    p_comments TEXT
+)
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_role_name VARCHAR(30);
+    v_project_exists BOOLEAN;
+    v_new_status VARCHAR(30);
+BEGIN
+    -- Verify project exists
+    SELECT EXISTS(SELECT 1 FROM project WHERE project_id = p_project_id) INTO v_project_exists;
+    IF NOT v_project_exists THEN
+        RAISE EXCEPTION 'Project with ID % does not exist', p_project_id;
+    END IF;
+
+    -- Verify that the reviewer is Faculty or Admin
+    SELECT r.role_name INTO v_role_name
+    FROM app_user u
+    JOIN role r ON u.role_id = r.role_id
+    WHERE u.user_id = p_faculty_id;
+
+    IF v_role_name IS NULL OR v_role_name NOT IN ('Faculty', 'Admin') THEN
+        RAISE EXCEPTION 'User % is not authorized as Faculty or Admin to review projects', p_faculty_id;
+    END IF;
+
+    -- Map review decision to project status
+    IF p_decision = 'Approved' THEN
+        v_new_status := 'Approved';
+    ELSIF p_decision = 'Rejected' THEN
+        v_new_status := 'Rejected';
+    ELSE
+        v_new_status := 'Pending';
+    END IF;
+
+    -- Perform atomic updates
+    -- 1. Insert faculty review record
+    INSERT INTO project_review (project_id, faculty_id, decision, comments, review_date)
+    VALUES (p_project_id, p_faculty_id, p_decision, p_comments, NOW());
+
+    -- 2. Update project status and approval faculty ID
+    UPDATE project
+    SET status = v_new_status,
+        approved_by = CASE WHEN p_decision = 'Approved' THEN p_faculty_id ELSE NULL END,
+        updated_at = NOW()
+    WHERE project_id = p_project_id;
+
+    -- Note: Trigger trg_audit_project_changes will automatically record the audit entry!
+END;
+$$;</pre>
+<h2>8.2 Stored Functions</h2>
+<p>fn_get_domain_project_count returns the count of projects in a selected research domain. fn_get_platform_stats returns the total and status-specific project counts together with paper, author and embedding totals.</p>
+<pre class="sql">CREATE OR REPLACE FUNCTION fn_get_domain_project_count(p_domain_id INTEGER)
+RETURNS INTEGER AS $$
+DECLARE
+    v_count INTEGER;
+BEGIN
+    SELECT COUNT(*) INTO v_count
+    FROM project_domain
+    WHERE domain_id = p_domain_id;
+    RETURN v_count;
+END;
+$$ LANGUAGE plpgsql;
+
+-- ----------------------------------------------------------------------------
+-- 5. Stored Function: Aggregate Platform Statistics
+-- ----------------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION fn_get_platform_stats()
+RETURNS TABLE (
+    total_projects BIGINT,
+    approved_projects BIGINT,
+    pending_projects BIGINT,
+    rejected_projects BIGINT,
+    total_papers BIGINT,
+    total_authors BIGINT,
+    total_embeddings BIGINT
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT 
+        (SELECT COUNT(*) FROM project) AS total_projects,
+        (SELECT COUNT(*) FROM project WHERE status = 'Approved') AS approved_projects,
+        (SELECT COUNT(*) FROM project WHERE status = 'Pending') AS pending_projects,
+        (SELECT COUNT(*) FROM project WHERE status = 'Rejected') AS rejected_projects,
+        (SELECT COUNT(*) FROM research_paper) AS total_papers,
+        (SELECT COUNT(*) FROM author) AS total_authors,
+        (SELECT COUNT(*) FROM embedding_ref) AS total_embeddings;
+END;
+$$ LANGUAGE plpgsql;</pre>
+<h2>8.3 Trigger for Project Timestamps</h2>
+<p>trg_project_timestamp fires BEFORE UPDATE and sets NEW.updated_at = NOW() to ensure that a modified project carries a new timestamp.</p>
+<pre class="sql">CREATE OR REPLACE FUNCTION fn_trg_project_timestamp()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.updated_at = NOW();
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS trg_project_timestamp ON project;
+CREATE TRIGGER trg_project_timestamp
+BEFORE UPDATE ON project
+FOR EACH ROW
+EXECUTE FUNCTION fn_trg_project_timestamp();</pre>
+<h2>8.4 Trigger for Project Audit History</h2>
+<p>trg_audit_project_changes records meaningful project INSERT, DELETE and selected UPDATE operations in AUDIT_LOG. Old and new values are stored as JSONB so the historical change is inspectable.</p>
+<pre class="sql">CREATE OR REPLACE FUNCTION fn_trg_audit_project_changes()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF (TG_OP = 'UPDATE') THEN
+        IF (OLD.status IS DISTINCT FROM NEW.status OR OLD.title IS DISTINCT FROM NEW.title) THEN
+            INSERT INTO audit_log (table_name, action, record_id, old_values, new_values, changed_at)
+            VALUES (
+                'project',
+                'UPDATE',
+                NEW.project_id,
+                jsonb_build_object(
+                    'title', OLD.title,
+                    'status', OLD.status,
+                    'approved_by', OLD.approved_by,
+                    'updated_at', OLD.updated_at
+                ),
+                jsonb_build_object(
+                    'title', NEW.title,
+                    'status', NEW.status,
+                    'approved_by', NEW.approved_by,
+                    'updated_at', NEW.updated_at
+                ),
+                NOW()
+            );
+        END IF;
+        RETURN NEW;
+    ELSIF (TG_OP = 'DELETE') THEN
+        INSERT INTO audit_log (table_name, action, record_id, old_values, new_values, changed_at)
+        VALUES (
+            'project',
+            'DELETE',
+            OLD.project_id,
+            jsonb_build_object(
+                'title', OLD.title,
+                'status', OLD.status,
+                'student_id', OLD.student_id
+            ),
+            NULL,
+            NOW()
+        );
+        RETURN OLD;
+    ELSIF (TG_OP = 'INSERT') THEN
+        INSERT INTO audit_log (table_name, action, record_id, old_values, new_values, changed_at)
+        VALUES (
+            'project',
+            'INSERT',
+            NEW.project_id,
+            NULL,
+            jsonb_build_object(
+                'title', NEW.title,
+                'status', NEW.status,
+                'student_id', NEW.student_id
+            ),
+            NOW()
+        );
+        RETURN NEW;
+    END IF;
+    RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS trg_audit_project_changes ON project;
+CREATE TRIGGER trg_audit_project_changes
+AFTER INSERT OR UPDATE OR DELETE ON project
+FOR EACH ROW
+EXECUTE FUNCTION fn_trg_audit_project_changes();</pre>
+<h2>8.5 Trigger for Embedding Cleanup</h2>
+<p>Because EMBEDDING_REF uses a polymorphic reference, it cannot enforce a single conventional foreign key to both PROJECT and RESEARCH_PAPER. The cleanup trigger deletes the corresponding vector record before either parent is deleted.</p>
+<pre class="sql">CREATE OR REPLACE FUNCTION fn_trg_cascade_delete_embeddings()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF (TG_TABLE_NAME = 'project') THEN
+        DELETE FROM embedding_ref 
+        WHERE entity_type = 'PROJECT' AND entity_id = OLD.project_id;
+        RETURN OLD;
+    ELSIF (TG_TABLE_NAME = 'research_paper') THEN
+        DELETE FROM embedding_ref 
+        WHERE entity_type = 'RESEARCH_PAPER' AND entity_id = OLD.paper_id;
+        RETURN OLD;
+    END IF;
+    RETURN OLD;
+END;
+$$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS trg_cascade_project_embeddings ON project;
+CREATE TRIGGER trg_cascade_project_embeddings
+BEFORE DELETE ON project
+FOR EACH ROW
+EXECUTE FUNCTION fn_trg_cascade_delete_embeddings();
+
+DROP TRIGGER IF EXISTS trg_cascade_paper_embeddings ON research_paper;
+CREATE TRIGGER trg_cascade_paper_embeddings
+BEFORE DELETE ON research_paper
+FOR EACH ROW
+EXECUTE FUNCTION fn_trg_cascade_delete_embeddings();</pre>
+<h2>8.6 Transactions and Integrity Testing</h2>
+<p>ResearchX tests transaction rollback during multi-step changes so a failed operation does not leave a partial relational/project embedding combination. This is relevant to the DBMS ACID atomicity property: all statements in a transaction succeed or the transaction's changes are rolled back.</p><p>The repository's automated evidence reports 13 of 13 platform integration checks passing, including project creation, faculty review, OpenAlex search/save, real similarity search, and cleanup of created project and paper records. A separate transaction-rollback test supplies further evidence.</p>
+<figure class="screenshot"><img src="https://raw.githubusercontent.com/Aayaan721/ResearchX-DBMS-project-/main/docs/evidence/screenshots/11_sql_stored_procedures_and_triggers.png" alt="Executed stored procedure, project trigger and audit-log results."/><figcaption>Figure 9. Executed stored procedure, project trigger and audit-log results.</figcaption></figure>
+<figure class="screenshot"><img src="https://raw.githubusercontent.com/Aayaan721/ResearchX-DBMS-project-/main/docs/evidence/screenshots/13_sql_transaction_rollback.png" alt="Transaction rollback and integrity verification evidence."/><figcaption>Figure 10. Transaction rollback and integrity verification evidence.</figcaption></figure>
+</section><section class="chapter" id="ch9"><h1>9. FRONT END DEVELOPMENT</h1>
+<h2>9.1 Technology Stack and Interface</h2>
+<p>The browser interface uses Next.js App Router, React, TypeScript, Tailwind CSS and reusable components for navigation, project and paper cards, statistics and similarity badges. Server API routes connect to PostgreSQL. Local embedding inference is performed using Xenova/all-MiniLM-L6-v2, while OpenAlex supplies live work metadata for literature discovery.</p><p>The interface was revised to improve navigation consistency across desktop and smaller screen sizes. Direct visits to Explore Literature and Find Similar begin with empty inputs and useful placeholders; homepage-initiated searches pass the query parameter to the relevant route.</p>
+<div class="tablewrap"><table><thead><tr><th>Interface / route</th><th>What the user can do</th><th>Database / API interaction</th></tr></thead><tbody><tr><td>Dashboard /</td><td>Navigate, initiate discovery or similarity search</td><td>GET /api/stats and related data</td></tr><tr><td>Projects /projects</td><td>Browse and filter local proposals</td><td>GET /api/projects</td></tr><tr><td>Submit /projects/new</td><td>Enter title, problem statement, research domains</td><td>POST /api/projects; PROJECT and EMBEDDING_REF</td></tr><tr><td>Project detail /projects/[id]</td><td>View project, submit faculty review, inspect similarity</td><td>GET project; review procedure</td></tr><tr><td>Edit /projects/[id]/edit</td><td>Modify proposal and update vector</td><td>PUT /api/projects/[id]</td></tr><tr><td>Explore /discover</td><td>Search live OpenAlex and save academic works</td><td>GET /api/openalex/search; POST /save</td></tr><tr><td>Saved papers /papers</td><td>Browse locally saved paper records</td><td>GET /api/papers</td></tr><tr><td>Find similar /similarity</td><td>Rank locally indexed items by cosine similarity</td><td>POST /api/similarity</td></tr></tbody></table><p class="tblcap">Table 4. Frontend routes and connected DBMS workflows.</p></div>
+<h2>9.2 Dashboard and Project Catalogue</h2>
+<figure class="screenshot"><img src="https://raw.githubusercontent.com/Aayaan721/ResearchX-DBMS-project-/main/docs/evidence/screenshots/01_dashboard.png" alt="ResearchX homepage after UI redesign."/><figcaption>Figure 11. ResearchX homepage after UI redesign.</figcaption></figure>
+<figure class="screenshot"><img src="https://raw.githubusercontent.com/Aayaan721/ResearchX-DBMS-project-/main/docs/evidence/screenshots/02_projects_listing.png" alt="Project catalogue with search and research-domain/status filtering."/><figcaption>Figure 12. Project catalogue with search and research-domain/status filtering.</figcaption></figure>
+<h2>9.3 Student Submission and Project Details</h2>
+<figure class="screenshot"><img src="https://raw.githubusercontent.com/Aayaan721/ResearchX-DBMS-project-/main/docs/evidence/screenshots/03_project_submission_form.png" alt="Project submission form and associated research-domain selection."/><figcaption>Figure 13. Project submission form and associated research-domain selection.</figcaption></figure>
+<figure class="screenshot"><img src="https://raw.githubusercontent.com/Aayaan721/ResearchX-DBMS-project-/main/docs/evidence/screenshots/04_project_details_and_review.png" alt="Project details, stored review information and related project workflow."/><figcaption>Figure 14. Project details, stored review information and related project workflow.</figcaption></figure>
+<figure class="screenshot"><img src="https://raw.githubusercontent.com/Aayaan721/ResearchX-DBMS-project-/main/docs/evidence/screenshots/05_project_edit_persistence.png" alt="Project update interface and persistence verification."/><figcaption>Figure 15. Project update interface and persistence verification.</figcaption></figure>
+<h2>9.4 Literature Discovery and Saved Papers</h2>
+<figure class="screenshot"><img src="https://raw.githubusercontent.com/Aayaan721/ResearchX-DBMS-project-/main/docs/evidence/screenshots/06_openalex_search.png" alt="Explore Literature page showing live OpenAlex results."/><figcaption>Figure 16. Explore Literature page showing live OpenAlex results.</figcaption></figure>
+<figure class="screenshot"><img src="https://raw.githubusercontent.com/Aayaan721/ResearchX-DBMS-project-/main/docs/evidence/screenshots/07_saved_papers.png" alt="Locally saved research-paper catalogue."/><figcaption>Figure 17. Locally saved research-paper catalogue.</figcaption></figure>
+<h2>9.5 Semantic Similarity</h2>
+<figure class="screenshot"><img src="https://raw.githubusercontent.com/Aayaan721/ResearchX-DBMS-project-/main/docs/evidence/screenshots/08_similarity_search.png" alt="Find Similar Research page showing semantic ranking from locally indexed vectors."/><figcaption>Figure 18. Find Similar Research page showing semantic ranking from locally indexed vectors.</figcaption></figure>
+<p>The ranking is based on cosine similarity of text embeddings against records already stored in EMBEDDING_REF. Displayed scores are alignment estimates, not reliable originality or plagiarism verdicts.</p>
+<h2>9.6 Responsive Design and Verification</h2>
+<figure class="screenshot"><img src="https://raw.githubusercontent.com/Aayaan721/ResearchX-DBMS-project-/main/docs/evidence/screenshots/14_mobile_homepage.png" alt="Mobile-responsive ResearchX homepage evidence."/><figcaption>Figure 19. Mobile-responsive ResearchX homepage evidence.</figcaption></figure>
+<p>Repository verification records describe responsive viewport testing, browser-based workflows and a successful production build. The dedicated targeted UI tests additionally check empty default inputs and homepage query preservation. The saved integration evidence reports 13 passed and 0 failed; later checks reported 4/4 targeted search workflows, 3/3 Phase 3 checks and 7 responsive viewports passing.</p><p>Production deployment would require real authentication/authorization, a hardened secret-management process and appropriate permission checks for all modifying API routes; these are outside the scope of the controlled course demonstration.</p>
+</section><section class="chapter" id="references"><h1>REFERENCES / BIBLIOGRAPHY</h1>
+<ol>
+<li>A. Silberschatz, H. F. Korth and S. Sudarshan, <em>Database System Concepts</em>, 7th ed., McGraw-Hill, 2019.</li>
+<li>R. Elmasri and S. B. Navathe, <em>Fundamentals of Database Systems</em>, 7th ed., Pearson, 2017.</li>
+<li>PES University, Department of CSE, UE24CS351A lecture material: Database Design; Entity–Relationship Model; Converting E-R Diagram to Relational Schema, August 2026.</li>
+<li>PostgreSQL Global Development Group, <em>PostgreSQL Documentation</em>, <a href="https://www.postgresql.org/docs/">postgresql.org/docs</a>.</li>
+<li>pgvector, <em>Open-source vector similarity search for Postgres</em>, <a href="https://github.com/pgvector/pgvector">github.com/pgvector/pgvector</a>.</li>
+<li>OpenAlex, <em>API Documentation</em>, <a href="https://help.openalex.org/api/">help.openalex.org/api</a>.</li>
+<li>N. Reimers and I. Gurevych, “Sentence-BERT: Sentence Embeddings using Siamese BERT-Networks,” EMNLP-IJCNLP, 2019.</li>
+<li>ResearchX DBMS Mini-Project, source code, test scripts, SQL and screenshots: <a href="https://github.com/Aayaan721/ResearchX-DBMS-project-">GitHub repository</a>.</li>
+</ol><p><strong>GitHub Link:</strong> <a href="https://github.com/Aayaan721/ResearchX-DBMS-project-">https://github.com/Aayaan721/ResearchX-DBMS-project-</a></p></section><section class="chapter" id="appendix"><h1>APPENDIX A — DEFINITIONS, ACRONYMS AND ABBREVIATIONS</h1>
+<div class="tablewrap"><table><thead><tr><th>Term</th><th>Definition</th></tr></thead><tbody><tr><td>DBMS</td><td>Database Management System</td></tr><tr><td>ER</td><td>Entity–Relationship</td></tr><tr><td>DDL</td><td>Data Definition Language</td></tr><tr><td>DML</td><td>Data Manipulation Language</td></tr><tr><td>PK / FK</td><td>Primary Key / Foreign Key</td></tr><tr><td>SQL</td><td>Structured Query Language</td></tr><tr><td>ACID</td><td>Atomicity, Consistency, Isolation and Durability</td></tr><tr><td>CRUD</td><td>Create, Read, Update and Delete</td></tr><tr><td>API</td><td>Application Programming Interface</td></tr><tr><td>NLP</td><td>Natural Language Processing</td></tr><tr><td>HNSW</td><td>Hierarchical Navigable Small World graph index</td></tr><tr><td>pgvector</td><td>PostgreSQL vector data type, operators and indexes</td></tr><tr><td>JSONB</td><td>PostgreSQL binary JSON storage format</td></tr><tr><td>Cosine similarity</td><td>Semantic vector alignment represented as 1 − cosine distance</td></tr><tr><td>OpenAlex</td><td>External scholarly metadata and academic works API</td></tr><tr><td>MiniLM</td><td>Compact transformer model used to construct dense text embeddings</td></tr></tbody></table><p class="tblcap">Table 6. Terminology and abbreviations used throughout this report.</p></div>
+<h2>Appendix B — Repository and Evidence Inventory</h2>
+<p>The project repository contains five main SQL source files and an evidence directory with real execution logs and 14 screenshots. Relevant paths are database/schema.sql, database/seed.sql, database/queries.sql, database/procedures_triggers.sql, database/vector_queries.sql, and docs/evidence/screenshots/.</p>
+<p>All screenshots included in this report are referenced from the latest public repository. Their content is sourced from the saved evidence files rather than newly fabricated SQL or browser output.</p>
+<h2>Appendix C — Practical Reproduction</h2>
+<pre class="sql">npm ci
+npm run build
+npm run start
+node scripts/test_platform.mjs
+node scripts/test_phase3_corrections.mjs
+node scripts/test_responsive_navigation.mjs
+node scripts/verify_targeted_ui_fix.mjs</pre>
+<p>These commands assume the application environment, database schema, pgvector extension and seed embeddings are already configured. Initial schema.sql is destructive and must only be run on a fresh disposable database.</p>
+</section></main></body></html>
