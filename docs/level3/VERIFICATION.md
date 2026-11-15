@@ -55,3 +55,7 @@ Screenshots were captured by Chromium during the recorded workflows. Login scree
 - The GitHub API host `api.github.com` is denied by the current network proxy before authentication. Git repository read/push works; pull-request creation is blocked until that host is allowed. The specific domain addition was saved to the environment draft without publishing or overwriting existing domains. No PR number or URL is invented.
 - This is a local academic authentication scheme, not a claim of a comprehensive security audit or public production readiness. The explicit local HTTP configuration disables Secure cookies; a separate secure configuration was verified to issue Secure + HTTP-only + SameSite=Lax cookies.
 - Existing certificate/approval language, guide details and university course-code differences in the original faculty-style report were preserved, not independently certified or silently corrected.
+
+## PR #1 follow-up
+
+Audit access and Windows-compatible initialization were corrected after this original execution record. See [PR1_REVIEW.md](PR1_REVIEW.md) for the newly executed API/browser/initializer regressions, rerun results, preservation checks, and explicit native Windows limitations. The current PR #1 already exists; the original API-access limitation above described its creation at the earlier checkpoint.

@@ -25,6 +25,8 @@ Scope: a locally demonstrated academic application. No registration service, OAu
 | Delete from the shared paper library | No | No | No | Yes |
 | Account directory | No | No | No | Yes (never password hashes) |
 
+Detailed global audit snapshots are Admin-only. A project audit history is available only to its Student owner, Faculty (who may review all projects), or Admin. Anonymous/other-Student browsing still returns the public project/reviews and aggregate statistics, with empty audit arrays. Both personalized GET responses use `Cache-Control: private, no-store` and `Vary: Cookie`; restricted UI history is cleared on session changes.
+
 The server ignores client `student_id`, `faculty_id`, `role`, `status`, and `approved_by` when deciding identity/permissions. Only the explicitly supported fields are used. UI visibility improves usability; API checks enforce authorization independently. Project creation and editing keep embeddings in the same SQL transaction. Deletion uses one statement plus existing cascades/triggers, preventing the former two-statement vector/project deletion gap.
 
 ## Architecture and frontend/API integration
@@ -99,7 +101,9 @@ OpenAlex searches global literature. Semantic search ranks only locally stored i
 
 ## Authentication and credential security
 
-Passwords use Node's built-in scrypt (N=32768, r=8, p=1), independent random 16-byte salts, 64-byte derived keys and constant-time comparison. Demo initialization replaces only legacy dummy/uninitialized hashes, with randomly generated passwords written exclusively to a mode-0600 file outside the checkout. It preserves initialized accounts on rerun. There is no universal committed password. Demo usernames: `aayaan_s`, `priya_k` (Students), `dr_shilpa`, `prof_sandesh` (Faculty), `admin_researchx` (Admin). Seed files contain only locked `!uninitialized` markers until initialization.
+For a fresh Windows checkout and exact PowerShell/NTFS instructions, see [WINDOWS_SETUP.md](WINDOWS_SETUP.md). Native Windows execution is not claimed in this Linux environment.
+
+Passwords use Node's built-in scrypt (N=32768, r=8, p=1), independent random 16-byte salts, 64-byte derived keys and constant-time comparison. Demo initialization replaces only legacy dummy/uninitialized hashes, with randomly generated passwords written exclusively to a private file outside the checkout. POSIX requires an owner-only directory and mode-0600 file; Windows requires a verified private NTFS ACL, because POSIX modes do not protect Windows files. It preserves initialized accounts on rerun. There is no universal committed password. Demo usernames: `aayaan_s`, `priya_k` (Students), `dr_shilpa`, `prof_sandesh` (Faculty), `admin_researchx` (Admin). Seed files contain only locked `!uninitialized` markers until initialization.
 
 Sessions use 256-bit random opaque tokens, only SHA256 token hashes stored in PostgreSQL, absolute eight-hour expiry, and database role lookup on every request. Login rotates the current cookie; logout deletes the server session and expires the cookie. Cookies are HTTP-only, SameSite=Lax, Path=/, and Secure by default. `SESSION_COOKIE_SECURE=false` is an explicit exception only for a local HTTP demonstration; use true for HTTPS. No signing secret is needed for opaque server sessions. Do not put session tokens in localStorage. Failed logins return one generic error and are throttled per username (10 attempts per 15-minute window) in PostgreSQL. This is a small local academic scheme, not a public-service account recovery or distributed abuse-prevention system.
 
@@ -139,6 +143,9 @@ When using the session's outbound proxy, run Node clients with `NODE_USE_ENV_PRO
 
 ```bash
 export TEST_CREDENTIALS_FILE="$DEMO_CREDENTIALS_FILE"
+node scripts/test_audit_access.mjs
+# Opt in only with CREATE DATABASE permission; creates/drops its own disposable DB.
+ALLOW_DISPOSABLE_DATABASE_TEST=true node scripts/test_account_initialization.mjs
 node scripts/test_auth.mjs
 node scripts/test_database_integrity.mjs
 node scripts/test_platform.mjs

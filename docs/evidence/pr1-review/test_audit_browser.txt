@@ -1,0 +1,6 @@
+PASS anonymous project remains readable without detailed audit UI
+PASS owner history disappears on logout without leaving public project
+PASS another Student does not receive or display historical audit values
+PASS Faculty retains authorized project review/audit workflow
+PASS Admin global history is removed immediately on logout while statistics remain
+Audit browser: 5 passed, 0 failed

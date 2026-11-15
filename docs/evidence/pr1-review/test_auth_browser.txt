@@ -1,0 +1,11 @@
+PASS anonymous project creation screen
+PASS invalid-password UI
+PASS logged-in author shown without identity selector
+PASS student cannot see other-owner edit or review controls
+PASS direct edit-page restriction
+PASS faculty review UI and restricted project actions
+PASS browser logout and protected-screen refresh
+PASS Admin shared-library controls
+PASS Student shared-library restrictions
+PASS mobile login layout and no page exceptions
+Authentication browser: 10 passed, 0 failed

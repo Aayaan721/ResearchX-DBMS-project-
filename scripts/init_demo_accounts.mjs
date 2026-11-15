@@ -1,16 +1,13 @@
 // Credentials are generated locally and never printed or committed.
 import { randomBytes } from 'node:crypto';
-import { writeFile, mkdir, realpath } from 'node:fs/promises';
-import { resolve, dirname } from 'node:path';
+import { writeFile, realpath, unlink } from 'node:fs/promises';
+import { credentialFilePath } from './private_credentials.mjs';
 import { database } from './db.mjs';
 import { hashPassword } from '../src/lib/password.mjs';
-const pool = database();
-const file = process.env.DEMO_CREDENTIALS_FILE;
-if (!file) throw new Error('Set DEMO_CREDENTIALS_FILE to a private path outside the checkout');
 const root = await realpath(new URL('..', import.meta.url));
-await mkdir(dirname(resolve(file)), { recursive: true, mode: 0o700 });
-const parent = await realpath(dirname(resolve(file)));
-if (parent === root || parent.startsWith(root + '/')) throw new Error('Keep credentials outside the checkout');
+const file = await credentialFilePath(process.env.DEMO_CREDENTIALS_FILE, root);
+const pool = database();
+let createdFile = false;
 const client = await pool.connect();
 try {
   await client.query('BEGIN');
@@ -26,9 +23,15 @@ try {
   if (credentials.length) {
     // Exclusive creation prevents overwriting pre-existing credentials.
     await writeFile(file, JSON.stringify(credentials, null, 2) + '\n', { mode: 0o600, flag: 'wx' });
+    createdFile = true;
   }
   await client.query('COMMIT');
   console.log(`Initialized ${credentials.length} accounts; existing initialized accounts were preserved.`);
-  if (credentials.length) console.log('Read demo credentials locally from DEMO_CREDENTIALS_FILE; do not share or commit them.');
-} catch (error) { await client.query('ROLLBACK'); throw error; }
+  if (credentials.length) console.log('Open DEMO_CREDENTIALS_FILE privately in a local editor; never print, share or commit it.');
+  else console.log('No passwords were regenerated. Use the original private credentials file; existing passwords cannot be recovered from hashes.');
+} catch (error) {
+  await client.query('ROLLBACK');
+  if (createdFile) await unlink(file); // Only remove a file this invocation created.
+  throw error;
+}
 finally { client.release(); await pool.end(); }

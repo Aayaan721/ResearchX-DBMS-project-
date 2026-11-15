@@ -1,5 +1,6 @@
 'use client';
 
+import { canViewProjectAudit } from '@/lib/audit-permissions';
 import { useAuth } from '@/components/AuthProvider';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -40,12 +41,15 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
   const [feedback, setFeedback] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
 
   useEffect(() => {
+    let active = true;
+    setAuditHistory([]);
     async function loadData() {
       try {
         const projRes = await fetch(`/api/projects/${projectId}`);
 
         if (projRes.ok) {
           const projData = await projRes.json();
+          if (!active) return;
           setProject(projData.project);
           setReviews(projData.reviews || []);
           setAuditHistory(projData.auditHistory || []);
@@ -55,12 +59,13 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
       } catch (err) {
         console.error('Failed to load project details:', err);
       } finally {
-        setLoading(false);
+        if (active) setLoading(false);
       }
     }
 
     loadData();
-  }, [projectId]);
+    return () => { active = false; };
+  }, [projectId, user?.user_id, user?.role_name]);
 
   async function handleReviewSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -433,7 +438,7 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
       </div>
 
       {/* Database Audit History for this Record */}
-      {auditHistory.length > 0 && (
+      {project && canViewProjectAudit(user, project.student_id) && auditHistory.length > 0 && (
         <div className="glass-panel p-6 rounded-3xl border border-slate-700/60">
           <div className="flex items-center gap-2 mb-4">
             <Activity className="h-4 w-4 text-emerald-400" />

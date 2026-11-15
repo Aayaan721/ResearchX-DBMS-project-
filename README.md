@@ -209,3 +209,7 @@ The older Windows setup instructions above describe the original unauthenticated
 - [Print-ready report, retaining university details and chapter order](reports/ResearchX_DBMS_Final_Report.html) — see its Level 3 addendum; old screenshots remain historical.
 
 The intended contribution split is documented with evidence limitations; Abhinav's individual implementation contributions remain unverified in the available Git history. No faculty evaluation or authorship claim is inferred from successful tests.
+
+## PR #1 follow-up: audit privacy and Windows credentials
+
+Global audit history is Admin-only; project history is limited to its owner, Faculty or Admin. Public browsing and aggregate statistics remain public. See [native Windows setup and secure credential initialization](docs/level3/WINDOWS_SETUP.md) for exact PowerShell commands, NTFS prerequisites and verification limits, and [PR #1 verification](docs/level3/PR1_REVIEW.md) for executed regression results. No default passwords are committed or printed.

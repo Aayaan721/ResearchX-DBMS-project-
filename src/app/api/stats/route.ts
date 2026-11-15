@@ -1,3 +1,5 @@
+import { currentUser } from '@/lib/auth';
+import { canViewGlobalAudit } from '@/lib/audit-permissions';
 import { fail } from '@/lib/http';
 import { NextResponse } from 'next/server';
 import { query } from '@/lib/db';
@@ -21,12 +23,13 @@ export async function GET() {
       ORDER BY project_count DESC, d.domain_name ASC
     `);
 
-    const recentAudit = await query(`
+    const canViewAudit = canViewGlobalAudit(await currentUser());
+    const recentAudit = canViewAudit ? await query(`
       SELECT log_id, table_name, action, record_id, old_values, new_values, changed_at
       FROM audit_log
       ORDER BY changed_at DESC
       LIMIT 5
-    `);
+    `) : { rows: [] };
 
     return NextResponse.json({
       stats: {
@@ -43,7 +46,8 @@ export async function GET() {
         project_count: parseInt(d.project_count, 10),
       })),
       recentAudit: recentAudit.rows,
-    });
+      canViewAudit,
+    }, { headers: { 'Cache-Control': 'private, no-store', Vary: 'Cookie' } });
   } catch (error: any) {
     console.error('Error fetching stats:', error);
     return fail(error);

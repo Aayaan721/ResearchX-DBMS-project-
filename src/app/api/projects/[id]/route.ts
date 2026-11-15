@@ -1,8 +1,11 @@
-import { requireUser } from '@/lib/auth';
+import { canViewProjectAudit } from '@/lib/audit-permissions';
+import { currentUser, requireUser } from '@/lib/auth';
 import { fail, readBody, textField, positiveId, domainIds, HttpError } from '@/lib/http';
 import { NextRequest, NextResponse } from 'next/server';
 import { query, pool } from '@/lib/db';
 import { generateEmbedding, formatVectorForPg } from '@/lib/embeddings';
+
+export const dynamic = 'force-dynamic';
 
 export async function GET(
   request: NextRequest,
@@ -67,20 +70,22 @@ export async function GET(
       [projectId]
     );
 
-    // Fetch audit history for this project
-    const auditRes = await query(
+    // Historical snapshots can include data no longer present in the public project.
+    const canViewAudit = canViewProjectAudit(await currentUser(), project.student_id);
+    const auditRes = canViewAudit ? await query(
       `SELECT log_id, action, old_values, new_values, changed_at
        FROM audit_log
        WHERE table_name = 'project' AND record_id = $1
        ORDER BY changed_at DESC`,
       [projectId]
-    );
+    ) : { rows: [] };
 
     return NextResponse.json({
       project,
       reviews: reviewsRes.rows,
       auditHistory: auditRes.rows,
-    });
+      canViewAudit,
+    }, { headers: { 'Cache-Control': 'private, no-store', Vary: 'Cookie' } });
   } catch (error: any) {
     console.error('Error fetching project:', error);
     return fail(error);
