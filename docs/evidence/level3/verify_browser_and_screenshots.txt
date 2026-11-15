@@ -50,4 +50,3 @@ Launching headless Chrome from: /usr/bin/chromium
  ALL 10 UI & DB WORKFLOWS COMPLETED SUCCESSFULLY!
  Captured genuine screenshots in /workspace/.researchx/level3/screenshots
 ================================================================
-

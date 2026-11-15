@@ -1,5 +1,7 @@
 # Executed Level 3 verification
 
+Text logs preserve command output with trailing whitespace/terminal carriage returns normalized for review.
+
 Executed 15 November 2026 on the existing populated local ResearchX database. Runtime: Node 24.19.0, PostgreSQL 16.15, pgvector 0.8.7, installed headless Chromium. Real Xenova MiniLM weights and live OpenAlex were used. No mock embeddings, skipped failed assertions or fabricated screenshots.
 
 ## Actual outcomes
