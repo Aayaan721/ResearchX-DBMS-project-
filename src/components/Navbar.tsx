@@ -1,5 +1,6 @@
 'use client';
 
+import { useAuth } from './AuthProvider';
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -16,6 +17,7 @@ import {
 
 export default function Navbar() {
   const pathname = usePathname();
+  const { user, loading, logout } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navLinks = [
@@ -75,6 +77,8 @@ export default function Navbar() {
             </div>
           </div>
 
+          <div className="flex items-center gap-2">
+          {!loading && (user ? <button onClick={logout} title={`${user.full_name} (${user.role_name})`} className="text-xs text-cyan-300 px-2 py-2 rounded-lg hover:bg-slate-800">Log out</button> : <Link href="/login" className="text-xs text-cyan-300 px-2 py-2 rounded-lg hover:bg-slate-800">Log in</Link>)}
           {/* Right Action: Prominent Submit Project Button */}
           <div className="hidden xl:flex items-center gap-3">
             <Link
@@ -102,6 +106,7 @@ export default function Navbar() {
             >
               {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </button>
+          </div>
           </div>
         </div>
       </div>

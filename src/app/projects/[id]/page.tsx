@@ -1,5 +1,6 @@
 'use client';
 
+import { useAuth } from '@/components/AuthProvider';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -22,18 +23,17 @@ import SimilarityScoreBadge from '@/components/SimilarityScoreBadge';
 
 export default function ProjectDetailsPage({ params }: { params: { id: string } }) {
   const router = useRouter();
+  const { user } = useAuth();
   const projectId = params.id;
 
   const [project, setProject] = useState<any>(null);
   const [reviews, setReviews] = useState<any[]>([]);
   const [auditHistory, setAuditHistory] = useState<any[]>([]);
-  const [facultyUsers, setFacultyUsers] = useState<any[]>([]);
   const [similarItems, setSimilarItems] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchingSimilarity, setSearchingSimilarity] = useState(false);
 
   // Review form states
-  const [facultyId, setFacultyId] = useState('');
   const [decision, setDecision] = useState<'Approved' | 'Rejected' | 'Changes Required'>('Approved');
   const [reviewComments, setReviewComments] = useState('');
   const [submittingReview, setSubmittingReview] = useState(false);
@@ -42,10 +42,7 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
   useEffect(() => {
     async function loadData() {
       try {
-        const [projRes, usersRes] = await Promise.all([
-          fetch(`/api/projects/${projectId}`),
-          fetch('/api/users'),
-        ]);
+        const projRes = await fetch(`/api/projects/${projectId}`);
 
         if (projRes.ok) {
           const projData = await projRes.json();
@@ -54,12 +51,7 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
           setAuditHistory(projData.auditHistory || []);
         }
 
-        if (usersRes.ok) {
-          const usersData = await usersRes.json();
-          const facList = usersData.faculty || [];
-          setFacultyUsers(facList);
-          if (facList.length > 0) setFacultyId(String(facList[0].user_id));
-        }
+
       } catch (err) {
         console.error('Failed to load project details:', err);
       } finally {
@@ -80,7 +72,6 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          faculty_id: parseInt(facultyId, 10),
           decision,
           comments: reviewComments,
         }),
@@ -164,6 +155,7 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
           <ArrowLeft className="h-4 w-4" /> Back to Projects Directory
         </Link>
         <div className="flex items-center gap-2">
+          {user && (user.role_name === 'Admin' || (user.role_name === 'Student' && user.user_id === project.student_id)) && <>
           <Link
             href={`/projects/${projectId}/edit`}
             className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg glass-panel hover:bg-slate-800 text-xs font-semibold text-slate-200 border border-slate-700 transition-colors"
@@ -176,6 +168,7 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
           >
             <Trash2 className="h-3.5 w-3.5" /> Delete
           </button>
+          </>}
         </div>
       </div>
 
@@ -358,26 +351,16 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
 
         {/* Demo Notice Banner */}
         <div className="p-3.5 rounded-xl bg-purple-950/30 border border-purple-900/50 text-xs text-purple-300/90 leading-relaxed">
-          <strong className="text-purple-200">Demonstration Workflow:</strong> This academic platform uses seeded university personas. Selecting a faculty reviewer simulates institutional authorization and executes stored procedure validation.
+          <strong className="text-purple-200">Demonstration Workflow:</strong> Reviews require a logged-in Faculty or Admin account. Reviewer identity comes from the session, not the form.
         </div>
 
-        <form onSubmit={handleReviewSubmit} className="space-y-4">
+        {user && ['Faculty', 'Admin'].includes(user.role_name) && <form onSubmit={handleReviewSubmit} className="space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
                 Faculty Reviewer
               </label>
-              <select
-                value={facultyId}
-                onChange={(e) => setFacultyId(e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-sm text-slate-200 focus:outline-none focus:border-cyan-500"
-              >
-                {facultyUsers.map((f) => (
-                  <option key={f.user_id} value={f.user_id}>
-                    {f.full_name} ({f.email})
-                  </option>
-                ))}
-              </select>
+              <p className="text-cyan-300 text-sm">{user?.full_name} ({user?.role_name})</p>
             </div>
 
             <div>
@@ -419,7 +402,7 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
               {submittingReview ? 'Executing Stored Procedure...' : 'Submit Faculty Review'}
             </button>
           </div>
-        </form>
+        </form>}
 
         {/* Past Reviews List */}
         {reviews.length > 0 && (

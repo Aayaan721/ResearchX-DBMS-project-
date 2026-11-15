@@ -1,3 +1,4 @@
+import { fail, positiveId, HttpError } from '@/lib/http';
 import { NextRequest, NextResponse } from 'next/server';
 import { searchOpenAlex } from '@/lib/openalex';
 import { query } from '@/lib/db';
@@ -8,7 +9,8 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const q = searchParams.get('q') || '';
-    const limit = Math.min(parseInt(searchParams.get('limit') || '10', 10), 25);
+    const limit = searchParams.has('limit') ? positiveId(searchParams.get('limit'), 'limit') : 10;
+    if (limit > 25 || q.length > 500) throw new HttpError(400, 'Search exceeds supported limits');
 
     if (!q.trim()) {
       return NextResponse.json({ results: [] });
@@ -39,9 +41,6 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ results });
   } catch (error: any) {
     console.error('OpenAlex search error:', error);
-    return NextResponse.json(
-      { error: error.message || 'Failed to search OpenAlex' },
-      { status: 500 }
-    );
+    return fail(error);
   }
 }

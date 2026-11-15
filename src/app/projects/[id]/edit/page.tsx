@@ -1,5 +1,6 @@
 'use client';
 
+import { useAuth, LoginRequired } from '@/components/AuthProvider';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -7,6 +8,8 @@ import { ArrowLeft, Save, AlertCircle } from 'lucide-react';
 
 export default function EditProjectPage({ params }: { params: { id: string } }) {
   const router = useRouter();
+  const { user, loading: authLoading } = useAuth();
+  const [ownerId, setOwnerId] = useState<number | null>(null);
   const projectId = params.id;
 
   const [title, setTitle] = useState('');
@@ -25,6 +28,7 @@ export default function EditProjectPage({ params }: { params: { id: string } }) 
     ])
       .then(([projData, domainsData]) => {
         if (projData.project) {
+          setOwnerId(projData.project.student_id);
           setTitle(projData.project.title || '');
           setProblemStatement(projData.project.problem_statement || '');
           setDescription(projData.project.description || '');
@@ -70,10 +74,12 @@ export default function EditProjectPage({ params }: { params: { id: string } }) 
     }
   }
 
-  if (loading) {
+  if (loading || authLoading) {
     return <div className="p-12 text-center text-slate-400">Loading project data for editing...</div>;
   }
 
+  if (!user) return <LoginRequired />;
+  if (user.role_name !== 'Admin' && (user.role_name !== 'Student' || user.user_id !== ownerId)) return <p>You can edit only your own projects.</p>;
   return (
     <div className="max-w-3xl mx-auto space-y-6">
       <Link

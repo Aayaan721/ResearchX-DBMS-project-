@@ -9,13 +9,15 @@ INSERT INTO role (role_id, role_name) VALUES
     (3, 'Faculty')
 ON CONFLICT (role_id) DO NOTHING;
 
--- 2. Users (Students, Faculty, Admin)
+-- 2. Users start locked; scripts/init_demo_accounts.mjs generates valid scrypt hashes
+-- and writes random passwords to a private file outside the checkout.
+-- Users (Students, Faculty, Admin)
 INSERT INTO app_user (user_id, username, password_hash, full_name, email, role_id) VALUES
-    (1, 'admin_researchx', '$2a$12$e6xU.5n7u2rGzU/ResearchXAdminHashedPasswordDummy', 'Platform Administrator', 'admin@researchx.edu', 1),
-    (2, 'aayaan_s', '$2a$12$k8yP.7m3v9qTaV/AayaanStudentHashedPasswordDummy', 'Aayaan S', 'aayaan@researchx.edu', 2),
-    (3, 'priya_k', '$2a$12$p9wQ.8n4w0rUbW/PriyaStudentHashedPasswordDummy', 'Priya Kulkarni', 'priya@researchx.edu', 2),
-    (4, 'dr_shilpa', '$2a$12$f5xR.6o2u1rTaV/DrShilpaFacultyHashedPasswordDummy', 'Dr. Shilpa S', 'shilpa.s@researchx.edu', 3),
-    (5, 'prof_sandesh', '$2a$12$h7zS.4p5v3sUbW/ProfSandeshFacultyHashedPasswordDummy', 'Prof. Sandesh B J', 'sandesh.bj@researchx.edu', 3)
+    (1, 'admin_researchx', '!uninitialized', 'Platform Administrator', 'admin@researchx.edu', 1),
+    (2, 'aayaan_s', '!uninitialized', 'Aayaan S', 'aayaan@researchx.edu', 2),
+    (3, 'priya_k', '!uninitialized', 'Priya Kulkarni', 'priya@researchx.edu', 2),
+    (4, 'dr_shilpa', '!uninitialized', 'Dr. Shilpa S', 'shilpa.s@researchx.edu', 3),
+    (5, 'prof_sandesh', '!uninitialized', 'Prof. Sandesh B J', 'sandesh.bj@researchx.edu', 3)
 ON CONFLICT (user_id) DO NOTHING;
 
 SELECT setval('app_user_user_id_seq', (SELECT MAX(user_id) FROM app_user));

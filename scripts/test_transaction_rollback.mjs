@@ -1,10 +1,11 @@
+import { connectionString } from './db.mjs';
 // scripts/test_transaction_rollback.mjs
 import pg from 'pg';
 import assert from 'assert';
 
 const { Pool } = pg;
 const pool = new Pool({
-  connectionString: 'postgresql://postgres@127.0.0.1:5432/researchx',
+  connectionString,
 });
 
 async function testRollback() {

@@ -1,10 +1,13 @@
+import { authenticatedFetch } from './test_helpers.mjs';
+const memberFetch = await authenticatedFetch('Student');
+import { connectionString } from './db.mjs';
 // scripts/test_phase3_corrections.mjs
 import pg from 'pg';
 import assert from 'assert';
 
 const { Pool } = pg;
 const pool = new Pool({
-  connectionString: 'postgresql://postgres@127.0.0.1:5432/researchx',
+  connectionString,
 });
 
 const BASE_URL = 'http://localhost:3000';
@@ -25,7 +28,7 @@ async function runPhase3Tests() {
     const testPaperOaId = `W${Date.now()}`;
     const testTitle = `Phase 3 Graph Neural Verification Run ${Date.now()}`;
 
-    const saveRes = await fetch(`${BASE_URL}/api/openalex/save`, {
+    const saveRes = await memberFetch(`${BASE_URL}/api/openalex/save`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -59,7 +62,7 @@ async function runPhase3Tests() {
     // ------------------------------------------------------------------------
     console.log('[Test 2] Testing Atomic Project Update & Embedding Re-Indexing...');
     // Create a temporary project
-    const createRes = await fetch(`${BASE_URL}/api/projects`, {
+    const createRes = await memberFetch(`${BASE_URL}/api/projects`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -85,7 +88,7 @@ async function runPhase3Tests() {
 
     // Update project with new content
     const updatedTitle = `Post-Update Title Verified Atomic ${Date.now()}`;
-    const updateRes = await fetch(`${BASE_URL}/api/projects/${testProjId}`, {
+    const updateRes = await memberFetch(`${BASE_URL}/api/projects/${testProjId}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -117,7 +120,7 @@ async function runPhase3Tests() {
     // ------------------------------------------------------------------------
     console.log('[Test 3] Testing Similarity API Validation, Bounds & Semantic Disclaimer...');
     // A. Query too short
-    const shortRes = await fetch(`${BASE_URL}/api/similarity`, {
+    const shortRes = await memberFetch(`${BASE_URL}/api/similarity`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ queryText: 'ab' }),
@@ -125,7 +128,7 @@ async function runPhase3Tests() {
     assert.strictEqual(shortRes.status, 400, 'Must reject queries shorter than 3 characters');
 
     // B. Valid query returns disclaimer and metric
-    const validSimRes = await fetch(`${BASE_URL}/api/similarity`, {
+    const validSimRes = await memberFetch(`${BASE_URL}/api/similarity`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ queryText: 'graph neural networks on citation datasets', limit: 5 }),

@@ -195,13 +195,17 @@ Genuine execution logs are saved in `docs/evidence/` and all 14 verified screens
 
 ---
 
-## 6. Security Scope & Demonstration Context
+## 6. DBMS Level 3: authentication, validation and report updates
 
-> [!IMPORTANT]
-> **Academic Demonstration Scope:** ResearchX is built as a university DBMS evaluation mini-project (UE23CS351A — PES University) to demonstrate relational database architecture, stored procedures, triggers, ACID transaction guarantees, and pgvector cosine similarity integration.
-> 
-> - **Authentication Context:** The platform uses seeded demonstration student and faculty personas (`app_user`) to simulate institutional review workflows and execute stored procedure authorization guards (`sp_review_and_approve_project`). It does **not** include an enterprise authentication provider (e.g. NextAuth, Supabase Auth, or Okta) and is **not intended for public internet deployment without production authentication middleware**.
-> - **Destructive Operations:** Deletion of projects and saved papers triggers deliberate client-side confirmation dialogs to prevent accidental data loss.
-> - **Similarity Interpretation:** Similarity scores represent mathematical **vector cosine similarity** computed over 384-dimensional dense embeddings (`Xenova/all-MiniLM-L6-v2`) in PostgreSQL. They represent conceptual alignment against locally indexed research, **not** probabilities of duplication, plagiarism, or lack of originality.
+The local demonstration now uses real login/logout and database-backed sessions. Students submit as themselves and may edit/delete only their own projects; Faculty review as themselves; Admin can maintain projects and the shared paper library. Public OpenAlex discovery and local semantic search remain available. Never use browser-supplied user IDs or roles for authorization.
 
+**Existing data safety:** never run `database/schema.sql` against a populated database; it is a destructive fresh-bootstrap script. Back up first, then apply the additive migration with `node scripts/migrate.mjs`. Existing tables, data and advanced SQL features are retained.
 
+The older Windows setup instructions above describe the original unauthenticated version. For the current application, use the required environment configuration, private demo-account initialization and commands in [the Level 3 implementation guide](docs/level3/IMPLEMENTATION.md#safe-local-execution-and-backup). Node utility scripts require exported `DATABASE_URL`; there is no connection fallback. `.env.example` contains placeholders only. Demo passwords are generated locally, never committed.
+
+- [Complete requirement mapping, architecture, ER mapping, SQL demonstrations, permissions and local commands](docs/level3/IMPLEMENTATION.md)
+- [Migrated data dictionary](docs/level3/DATA_DICTIONARY.md)
+- [Actual test results and screenshots](docs/level3/VERIFICATION.md)
+- [Print-ready report, retaining university details and chapter order](reports/ResearchX_DBMS_Final_Report.html) — see its Level 3 addendum; old screenshots remain historical.
+
+The intended contribution split is documented with evidence limitations; Abhinav's individual implementation contributions remain unverified in the available Git history. No faculty evaluation or authorship claim is inferred from successful tests.

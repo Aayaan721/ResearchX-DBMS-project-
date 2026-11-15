@@ -5,6 +5,7 @@ import { User, CheckCircle2, Clock, XCircle, Sparkles, ArrowRight, Trash2 } from
 
 export interface ProjectData {
   project_id: number;
+  student_id?: number;
   title: string;
   problem_statement: string;
   description?: string;

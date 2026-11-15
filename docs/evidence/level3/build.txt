@@ -1,0 +1,54 @@
+
+> researchx@1.0.0 build
+> next build
+
+  ▲ Next.js 14.2.15
+  - Environments: .env.local
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully
+   Linting and checking validity of types ...
+   Collecting page data ...
+   Generating static pages (0/16) ...
+   Generating static pages (4/16) 
+   Generating static pages (8/16) 
+   Generating static pages (12/16) 
+ ✓ Generating static pages (16/16)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                              Size     First Load JS
+┌ ○ /                                    6.31 kB         100 kB
+├ ○ /_not-found                          873 B            88 kB
+├ ƒ /api/auth/login                      0 B                0 B
+├ ƒ /api/auth/logout                     0 B                0 B
+├ ƒ /api/auth/me                         0 B                0 B
+├ ○ /api/domains                         0 B                0 B
+├ ƒ /api/openalex/save                   0 B                0 B
+├ ƒ /api/openalex/search                 0 B                0 B
+├ ƒ /api/papers                          0 B                0 B
+├ ƒ /api/papers/[id]                     0 B                0 B
+├ ƒ /api/projects                        0 B                0 B
+├ ƒ /api/projects/[id]                   0 B                0 B
+├ ƒ /api/projects/[id]/review            0 B                0 B
+├ ƒ /api/similarity                      0 B                0 B
+├ ƒ /api/stats                           0 B                0 B
+├ ƒ /api/users                           0 B                0 B
+├ ○ /discover                            4.82 kB        98.8 kB
+├ ○ /icon.svg                            0 B                0 B
+├ ○ /login                               1.56 kB        95.6 kB
+├ ○ /papers                              3.96 kB          98 kB
+├ ○ /projects                            4.8 kB         98.8 kB
+├ ƒ /projects/[id]                       6.05 kB         100 kB
+├ ƒ /projects/[id]/edit                  3.07 kB        97.1 kB
+├ ○ /projects/new                        3.84 kB        97.9 kB
+└ ○ /similarity                          4.34 kB        98.4 kB
++ First Load JS shared by all            87.1 kB
+  ├ chunks/117-c886ff963ce8d2dd.js       31.6 kB
+  ├ chunks/fd9d1056-7b7bd0de03e51682.js  53.6 kB
+  └ other shared chunks (total)          1.89 kB
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+

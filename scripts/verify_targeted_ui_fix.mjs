@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import puppeteer from 'puppeteer-core';
 
-const CHROME_PATH = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
+const CHROME_PATH = process.env.CHROME_PATH || (process.platform === 'win32' ? 'C:/Program Files/Google/Chrome/Application/chrome.exe' : '/usr/bin/chromium');
 const BASE_URL = 'http://localhost:3000';
 
 const browser = await puppeteer.launch({
@@ -34,8 +34,7 @@ try {
   console.log('\n--- Test 2: Homepage-Initiated Search to /discover ---');
   await page.goto(BASE_URL, { waitUntil: 'networkidle0' });
   await page.type('input[placeholder*="Search global papers"]', 'deep residual learning');
-  await page.click('button[type="submit"]');
-  await page.waitForNavigation({ waitUntil: 'networkidle0' });
+  await Promise.all([page.waitForNavigation({ waitUntil: 'networkidle0' }), page.click('button[type="submit"]')]);
 
   assert.ok(page.url().includes('/discover?q=deep%20residual%20learning'), `URL should have query param: ${page.url()}`);
   const populatedDiscoverVal = await page.$eval('input[type="text"]', el => el.value);
@@ -71,8 +70,7 @@ try {
   });
   await new Promise(r => setTimeout(r, 400));
   await page.type('input[placeholder*="Enter a project idea"]', 'neural graph collaborative filtering');
-  await page.click('button[type="submit"]');
-  await page.waitForNavigation({ waitUntil: 'networkidle0' });
+  await Promise.all([page.waitForNavigation({ waitUntil: 'networkidle0' }), page.click('button[type="submit"]')]);
 
   assert.ok(page.url().includes('/similarity?q=neural%20graph%20collaborative%20filtering'), `URL should have query param: ${page.url()}`);
   const populatedSimilarityVal = await page.$eval('textarea', el => el.value);

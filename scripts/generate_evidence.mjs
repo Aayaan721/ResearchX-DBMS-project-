@@ -1,3 +1,4 @@
+import { connectionString } from './db.mjs';
 // scripts/generate_evidence.mjs
 import fs from 'fs';
 import { execSync } from 'child_process';
@@ -5,7 +6,7 @@ import pg from 'pg';
 
 const { Pool } = pg;
 const pool = new Pool({
-  connectionString: 'postgresql://postgres@127.0.0.1:5432/researchx',
+  connectionString,
 });
 
 async function run() {

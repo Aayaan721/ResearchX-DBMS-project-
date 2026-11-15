@@ -1,0 +1,1 @@
+PASS Secure, HTTP-only, SameSite=Lax session cookie in secure configuration; logout succeeded.

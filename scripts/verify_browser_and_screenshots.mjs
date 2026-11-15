@@ -1,3 +1,5 @@
+import { loginBrowser } from './test_helpers.mjs';
+import { connectionString } from './db.mjs';
 // scripts/verify_browser_and_screenshots.mjs
 import puppeteer from 'puppeteer-core';
 import pg from 'pg';
@@ -5,11 +7,11 @@ import fs from 'fs';
 
 const { Pool } = pg;
 const pool = new Pool({
-  connectionString: 'postgresql://postgres@127.0.0.1:5432/researchx',
+  connectionString,
 });
 
-const CHROME_PATH = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
-const SCREENSHOT_DIR = 'docs/evidence/screenshots';
+const CHROME_PATH = process.env.CHROME_PATH || (process.platform === 'win32' ? 'C:/Program Files/Google/Chrome/Application/chrome.exe' : '/usr/bin/chromium');
+const SCREENSHOT_DIR = process.env.SCREENSHOT_DIR || 'docs/evidence/level3/screenshots';
 
 // Helper to click element by text
 async function clickByText(page, selector, text) {
@@ -48,6 +50,7 @@ async function main() {
   });
 
   let createdProjectId = null;
+  const savedPaperIdsBefore = new Set((await pool.query('SELECT paper_id FROM research_paper')).rows.map(r => r.paper_id));
 
   try {
     // --------------------------------------------------------------------------
@@ -108,6 +111,7 @@ async function main() {
     // Workflow 4: Submit New Research Project & Atomic pgvector indexing
     // --------------------------------------------------------------------------
     console.log('\n[4/10] Testing Project Submission Form (http://localhost:3000/projects/new)...');
+    await loginBrowser(page, 'Student');
     await page.goto('http://localhost:3000/projects/new', { waitUntil: 'networkidle2' });
     await page.waitForSelector('input[placeholder*="Adaptive Indexing"]');
 
@@ -160,6 +164,8 @@ async function main() {
 
     // Submit Faculty Review via UI
     console.log('  -> Submitting faculty review via UI (sp_review_and_approve_project)...');
+    await loginBrowser(page, 'Faculty');
+    await page.goto(`http://localhost:3000/projects/${createdProjectId}`, { waitUntil: 'networkidle2' });
     await page.type(
       'textarea[placeholder*="Enter faculty critique"]',
       'Topological quantum simulation methodology verified. Approved for experimental implementation.'
@@ -183,6 +189,7 @@ async function main() {
     // Workflow 6: Edit Project & Atomic Re-indexing Persistence
     // --------------------------------------------------------------------------
     console.log('\n[6/10] Testing Edit Project Form...');
+    await loginBrowser(page, 'Student');
     await page.goto(`http://localhost:3000/projects/${createdProjectId}/edit`, { waitUntil: 'networkidle2' });
     await page.waitForSelector('input[value*="QuantumGraph"]');
 
@@ -222,9 +229,11 @@ async function main() {
       console.log('  -> Clicking Save Paper for an OpenAlex work...');
       await clickByText(page, 'button', 'Save Paper');
       await new Promise((r) => setTimeout(r, 4000));
+      const fresh = (await pool.query("SELECT rp.paper_id,vector_dims(er.embedding) dims FROM research_paper rp JOIN embedding_ref er ON er.entity_type='RESEARCH_PAPER' AND er.entity_id=rp.paper_id")).rows.filter(r => !savedPaperIdsBefore.has(r.paper_id));
+      if (!fresh.length || fresh.some(r => r.dims !== 384)) throw new Error('No newly saved paper with a real vector');
       console.log('  -> Paper saved and indexed via UI.');
     } catch (e) {
-      console.log('  -> Paper already saved or button text changed:', e.message);
+      throw e;
     }
 
     // --------------------------------------------------------------------------
@@ -281,13 +290,18 @@ async function main() {
     console.error('\n*** ERROR DURING BROWSER WORKFLOW ***:', error);
     throw error;
   } finally {
+    if (createdProjectId) await pool.query('DELETE FROM project WHERE project_id=$1', [createdProjectId]);
+    // Delete only papers created by this browser run, not pre-existing records.
+    const added = (await pool.query('SELECT paper_id FROM research_paper')).rows.filter(r => !savedPaperIdsBefore.has(r.paper_id));
+    for (const row of added) await pool.query('DELETE FROM research_paper WHERE paper_id=$1', [row.paper_id]);
+    if (consoleErrors.length) { await browser.close(); await pool.end(); throw new Error('Browser console errors: ' + consoleErrors.join('; ')); }
     await browser.close();
     await pool.end();
   }
 
   console.log('\n================================================================');
   console.log(' ALL 10 UI & DB WORKFLOWS COMPLETED SUCCESSFULLY!');
-  console.log(' Captured genuine screenshots in docs/evidence/screenshots/');
+  console.log(` Captured genuine screenshots in ${SCREENSHOT_DIR}`);
   console.log('================================================================\n');
 }
 

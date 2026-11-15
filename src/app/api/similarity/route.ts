@@ -1,12 +1,13 @@
+import { fail, readBody, positiveId } from '@/lib/http';
 import { NextRequest, NextResponse } from 'next/server';
 import { query } from '@/lib/db';
 import { generateEmbedding, formatVectorForPg } from '@/lib/embeddings';
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
+    const body = await readBody(request);
     const { queryText, projectId, limit } = body || {};
-    const rawLimit = parseInt(String(limit), 10);
+    const rawLimit = limit === undefined ? 8 : positiveId(limit, 'limit');
     const safeLimit = isNaN(rawLimit) ? 8 : Math.min(Math.max(rawLimit, 1), 50);
 
     let vectorStr: string | null = null;
@@ -14,7 +15,7 @@ export async function POST(request: NextRequest) {
     let sourceTitle: string | null = null;
 
     if (projectId) {
-      excludeProjectId = parseInt(String(projectId), 10);
+      excludeProjectId = positiveId(projectId, 'project ID');
       if (isNaN(excludeProjectId)) {
         return NextResponse.json({ error: 'Invalid project ID specified' }, { status: 400 });
       }
@@ -112,9 +113,6 @@ export async function POST(request: NextRequest) {
     });
   } catch (error: any) {
     console.error('Similarity search error:', error);
-    return NextResponse.json(
-      { error: error.message || 'Vector similarity search failed' },
-      { status: 500 }
-    );
+    return fail(error);
   }
 }

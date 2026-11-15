@@ -1,3 +1,4 @@
+import { fail } from '@/lib/http';
 import { NextResponse } from 'next/server';
 import { query } from '@/lib/db';
 
@@ -45,6 +46,6 @@ export async function GET() {
     });
   } catch (error: any) {
     console.error('Error fetching stats:', error);
-    return NextResponse.json({ error: error.message || 'Failed to fetch platform stats' }, { status: 500 });
+    return fail(error);
   }
 }

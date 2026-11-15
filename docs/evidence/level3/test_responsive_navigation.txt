@@ -1,0 +1,8 @@
+PASS navigation and layout at 375px
+PASS navigation and layout at 640px
+PASS navigation and layout at 700px
+PASS navigation and layout at 768px
+PASS navigation and layout at 1024px
+PASS navigation and layout at 1280px
+PASS navigation and layout at 1366px
+PASS favicon and browser resource checks

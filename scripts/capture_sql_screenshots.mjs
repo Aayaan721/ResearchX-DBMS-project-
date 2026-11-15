@@ -1,3 +1,4 @@
+import { connectionString } from './db.mjs';
 // scripts/capture_sql_screenshots.mjs
 import puppeteer from 'puppeteer-core';
 import pg from 'pg';
@@ -5,7 +6,7 @@ import fs from 'fs';
 
 const { Pool } = pg;
 const pool = new Pool({
-  connectionString: 'postgresql://postgres@127.0.0.1:5432/researchx',
+  connectionString,
 });
 
 const CHROME_PATH = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
