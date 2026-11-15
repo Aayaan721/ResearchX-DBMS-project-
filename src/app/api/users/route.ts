@@ -1,8 +1,12 @@
+import { requireUser } from '@/lib/auth';
+export const dynamic = 'force-dynamic';
+import { fail } from '@/lib/http';
 import { NextResponse } from 'next/server';
 import { query } from '@/lib/db';
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
+    await requireUser(request, ['Admin']);
     const res = await query(`
       SELECT 
         u.user_id,
@@ -26,6 +30,6 @@ export async function GET() {
       admins,
     });
   } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return fail(error);
   }
 }

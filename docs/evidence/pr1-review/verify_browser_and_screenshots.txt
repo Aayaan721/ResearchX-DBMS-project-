@@ -1,0 +1,52 @@
+================================================================
+ ResearchX Phase 3 — UI/UX Browser Verification & Screenshots
+================================================================
+
+Launching headless Chrome from: /usr/bin/chromium
+[1/10] Testing Redesigned Homepage (http://localhost:3000)...
+  -> Saved: /workspace/.researchx/pr1-review/screenshots/01_dashboard.png
+  -> Homepage research hero & metrics verified successfully.
+
+[2/10] Testing Mobile Layout (Viewport 375x812)...
+  -> Saved: /workspace/.researchx/pr1-review/screenshots/14_mobile_homepage.png
+
+[3/10] Testing Projects Directory (http://localhost:3000/projects)...
+  -> Saved: /workspace/.researchx/pr1-review/screenshots/02_projects_listing.png
+
+[4/10] Testing Project Submission Form (http://localhost:3000/projects/new)...
+  -> Saved: /workspace/.researchx/pr1-review/screenshots/03_project_submission_form.png
+  -> Submitting form...
+  -> Navigated to: http://localhost:3000/projects/71
+  -> Created Project ID: 71
+  -> Verified in PostgreSQL: Project row exists and 384-d pgvector is stored.
+
+[5/10] Testing Project Details & Demo Faculty Review...
+  -> Running 1-click similarity discovery on details page...
+  -> Submitting faculty review via UI (sp_review_and_approve_project)...
+  -> Saved: /workspace/.researchx/pr1-review/screenshots/04_project_details_and_review.png
+  -> Project status is Approved in PostgreSQL. Audit log entries count: 2
+
+[6/10] Testing Edit Project Form...
+  -> Saved: /workspace/.researchx/pr1-review/screenshots/05_project_edit_persistence.png
+  -> Project edit persisted cleanly in PostgreSQL.
+
+[7/10] Testing Live OpenAlex Academic Search (http://localhost:3000/discover)...
+  -> Saved: /workspace/.researchx/pr1-review/screenshots/06_openalex_search.png
+  -> Clicking Save Paper for an OpenAlex work...
+  -> Paper saved and indexed via UI.
+
+[8/10] Testing Saved Papers Library (http://localhost:3000/papers)...
+  -> Saved: /workspace/.researchx/pr1-review/screenshots/07_saved_papers.png
+
+[9/10] Testing Vector Similarity Engine (http://localhost:3000/similarity)...
+  -> Saved: /workspace/.researchx/pr1-review/screenshots/08_similarity_search.png
+  -> Vector similarity search executed and rendered ranked scores successfully.
+
+[10/10] Cleaning up temporary test project #71...
+  -> Deleted project #71 from PostgreSQL.
+  -> Cascade check: project_domain: 0, reviews: 0, embeddings: 0
+
+================================================================
+ ALL 10 UI & DB WORKFLOWS COMPLETED SUCCESSFULLY!
+ Captured genuine screenshots in /workspace/.researchx/pr1-review/screenshots
+================================================================

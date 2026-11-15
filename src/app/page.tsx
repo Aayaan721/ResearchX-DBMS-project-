@@ -1,5 +1,7 @@
 'use client';
 
+import { useAuth } from '@/components/AuthProvider';
+import { canViewGlobalAudit } from '@/lib/audit-permissions';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -45,6 +47,7 @@ interface AuditItem {
 
 export default function HomePage() {
   const router = useRouter();
+  const { user } = useAuth();
   const [stats, setStats] = useState<PlatformStats | null>(null);
   const [domains, setDomains] = useState<DomainItem[]>([]);
   const [recentProjects, setRecentProjects] = useState<ProjectData[]>([]);
@@ -57,6 +60,8 @@ export default function HomePage() {
   const [techDrawerOpen, setTechDrawerOpen] = useState(false);
 
   useEffect(() => {
+    let active = true;
+    setRecentAudit([]);
     async function loadData() {
       try {
         const [statsRes, projectsRes] = await Promise.all([
@@ -66,6 +71,7 @@ export default function HomePage() {
 
         if (statsRes.ok) {
           const statsData = await statsRes.json();
+          if (!active) return;
           setStats(statsData.stats);
           setDomains(statsData.domains || []);
           setRecentAudit(statsData.recentAudit || []);
@@ -73,17 +79,19 @@ export default function HomePage() {
 
         if (projectsRes.ok) {
           const projData = await projectsRes.json();
+          if (!active) return;
           setRecentProjects((projData.projects || []).slice(0, 4));
         }
       } catch (err) {
         console.error('Failed to load homepage data:', err);
       } finally {
-        setLoading(false);
+        if (active) setLoading(false);
       }
     }
 
     loadData();
-  }, []);
+    return () => { active = false; };
+  }, [user?.user_id, user?.role_name]);
 
   const handleHeroSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -418,7 +426,9 @@ export default function HomePage() {
                 <span className="text-[11px] font-mono text-emerald-400">audit_log</span>
               </div>
 
-              {recentAudit.length === 0 ? (
+              {!canViewGlobalAudit(user) ? (
+                <p className="text-xs text-slate-500">Detailed system audit history is available to administrators.</p>
+              ) : recentAudit.length === 0 ? (
                 <p className="text-xs text-slate-500">No audit events recorded yet.</p>
               ) : (
                 <div className="divide-y divide-slate-800/80 max-h-48 overflow-y-auto">

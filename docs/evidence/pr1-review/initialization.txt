@@ -1,0 +1,16 @@
+PASS Windows path boundaries reject nested/case-variant checkout paths
+PASS POSIX path boundaries distinguish descendants from siblings
+PASS fresh PostgreSQL/pgvector bootstrap starts demo accounts locked
+PASS initialization before migration fails without changing accounts or writing credentials
+PASS missing and relative credential paths fail safely
+PASS credential files inside the real checkout are rejected
+PASS symlink/junction into the checkout cannot bypass the location check
+PASS an existing credentials file is never overwritten and DB changes roll back
+PASS native Node --env-file initializes fresh accounts with paths containing spaces
+PASS fresh database credentials authenticate every seeded role through real HTTP login/logout
+PASS rerunning initialization preserves initialized hashes and the private file
+PASS a lost credentials file does not silently reset initialized passwords
+PASS commit failure rolls back hashes and removes only the newly created credential file
+PASS partial initialization changes only pending accounts
+Account initialization: 14 passed, 0 failed
+Windows path semantics were tested; native Windows/NTFS execution requires a Windows host.

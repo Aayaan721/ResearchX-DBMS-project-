@@ -1,0 +1,20 @@
+================================================================
+ ResearchX Controlled Transaction Rollback & Integrity Test
+================================================================
+
+[Scenario 1] Testing Multi-Table Transaction Atomicity & Rollback...
+  -> Baseline project count: 6
+  -> Uncommitted project row inserted with temporary ID #49
+  -> Intentionally executing invalid statement (violating CHECK status constraint)...
+  -> Successfully intercepted expected database error: "new row for relation "project" violates check constraint "project_status_check""
+  -> Executed client.query("ROLLBACK").
+  [PASS] Scenario 1 PASSED: Zero orphan records created, transaction rolled back cleanly.
+
+[Scenario 2] Testing Stored Procedure sp_review_and_approve_project Authorization Guard...
+  -> Attempting review approval with unauthorized student user (user_id = 2)...
+  -> Stored procedure correctly raised exception: "User 2 is not authorized as Faculty or Admin to review projects"
+  [PASS] Scenario 2 PASSED: Authorization guard protected database consistency.
+
+================================================================
+ ALL TRANSACTION ROLLBACK & CONSISTENCY TESTS PASSED [OK]
+================================================================

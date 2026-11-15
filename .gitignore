@@ -10,3 +10,11 @@ yarn-error.log*
 .DS_Store
 extracted_images/
 *.tsbuildinfo
+
+# Private local configuration and database backups
+.env
+.env.*
+!.env.example
+*.dump
+*.backup
+*.credentials.json

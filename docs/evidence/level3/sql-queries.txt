@@ -1,0 +1,201 @@
+[
+  {
+    "command": "SELECT",
+    "rows": [
+      {
+        "domain_id": 1,
+        "domain_name": "Artificial Intelligence & Machine Learning",
+        "total_projects": "5",
+        "approved_projects": "2",
+        "pending_projects": "2",
+        "avg_problem_statement_chars": "140.40"
+      },
+      {
+        "domain_id": 3,
+        "domain_name": "Database Systems & Vector Retrieval",
+        "total_projects": "2",
+        "approved_projects": "2",
+        "pending_projects": "0",
+        "avg_problem_statement_chars": "145.00"
+      },
+      {
+        "domain_id": 2,
+        "domain_name": "Natural Language Processing & LLMs",
+        "total_projects": "2",
+        "approved_projects": "1",
+        "pending_projects": "0",
+        "avg_problem_statement_chars": "144.00"
+      },
+      {
+        "domain_id": 6,
+        "domain_name": "Cloud & Distributed Systems",
+        "total_projects": "1",
+        "approved_projects": "1",
+        "pending_projects": "0",
+        "avg_problem_statement_chars": "148.00"
+      },
+      {
+        "domain_id": 4,
+        "domain_name": "Computer Vision & Multimodal AI",
+        "total_projects": "1",
+        "approved_projects": "0",
+        "pending_projects": "1",
+        "avg_problem_statement_chars": "136.00"
+      },
+      {
+        "domain_id": 5,
+        "domain_name": "Cybersecurity & Data Privacy",
+        "total_projects": "1",
+        "approved_projects": "0",
+        "pending_projects": "1",
+        "avg_problem_statement_chars": "136.00"
+      }
+    ]
+  },
+  {
+    "command": "SELECT",
+    "rows": [
+      {
+        "year": 2020,
+        "papers_published": "3",
+        "total_citations": "7440",
+        "avg_citations_per_paper": "2480.00",
+        "max_citations": 3100
+      },
+      {
+        "year": 2019,
+        "papers_published": "1",
+        "total_citations": "7850",
+        "avg_citations_per_paper": "7850.00",
+        "max_citations": 7850
+      },
+      {
+        "year": 2017,
+        "papers_published": "1",
+        "total_citations": "112000",
+        "avg_citations_per_paper": "112000.00",
+        "max_citations": 112000
+      }
+    ]
+  },
+  {
+    "command": "UPDATE",
+    "rows": []
+  },
+  {
+    "command": "DELETE",
+    "rows": []
+  },
+  {
+    "command": "SELECT",
+    "rows": [
+      {
+        "paper_id": 3,
+        "title": "Efficient and Robust Approximate Nearest Neighbor Search Using Hierarchical Navigable Small World Graphs",
+        "year": 2020,
+        "cited_by_count": 3100,
+        "cohort_avg_citations": "2480.00"
+      }
+    ]
+  },
+  {
+    "command": "SELECT",
+    "rows": [
+      {
+        "user_id": 2,
+        "username": "aayaan_s",
+        "full_name": "Aayaan S",
+        "email": "aayaan@researchx.edu"
+      },
+      {
+        "user_id": 3,
+        "username": "priya_k",
+        "full_name": "Priya Kulkarni",
+        "email": "priya@researchx.edu"
+      }
+    ]
+  },
+  {
+    "command": "SELECT",
+    "rows": [
+      {
+        "project_id": 1,
+        "title": "ResearchX: Intelligent Research Discovery & Project Similarity Platform",
+        "status": "Approved",
+        "student_name": "Aayaan S",
+        "student_email": "aayaan@researchx.edu",
+        "domains": "Artificial Intelligence & Machine Learning, Database Systems & Vector Retrieval",
+        "reviewed_by_faculty": "Dr. Shilpa S",
+        "review_decision": "Approved",
+        "review_comments": "Strong relational schema with pgvector integration. Approved for implementation.",
+        "vector_status": "Indexed (384-d)",
+        "created_at": "2026-10-31T17:43:24.689Z"
+      },
+      {
+        "project_id": 2,
+        "title": "BioMedQA: Clinical Question Answering Using Dense Passage Retrieval",
+        "status": "Approved",
+        "student_name": "Priya Kulkarni",
+        "student_email": "priya@researchx.edu",
+        "domains": "Artificial Intelligence & Machine Learning, Natural Language Processing & LLMs",
+        "reviewed_by_faculty": "Dr. Shilpa S",
+        "review_decision": "Approved",
+        "review_comments": "Clear biomedical retrieval methodology. Approved for pilot evaluation.",
+        "vector_status": "Indexed (384-d)",
+        "created_at": "2026-10-31T17:43:24.689Z"
+      },
+      {
+        "project_id": 3,
+        "title": "EdgeVision: Low-Power Object Detection on Microcontrollers",
+        "status": "Pending",
+        "student_name": "Aayaan S",
+        "student_email": "aayaan@researchx.edu",
+        "domains": "Artificial Intelligence & Machine Learning, Computer Vision & Multimodal AI",
+        "reviewed_by_faculty": null,
+        "review_decision": null,
+        "review_comments": null,
+        "vector_status": "Indexed (384-d)",
+        "created_at": "2026-10-31T17:43:24.689Z"
+      },
+      {
+        "project_id": 4,
+        "title": "PrivacyGuard: Differential Privacy in Collaborative Federated Learning",
+        "status": "Pending",
+        "student_name": "Priya Kulkarni",
+        "student_email": "priya@researchx.edu",
+        "domains": "Artificial Intelligence & Machine Learning, Cybersecurity & Data Privacy",
+        "reviewed_by_faculty": null,
+        "review_decision": null,
+        "review_comments": null,
+        "vector_status": "Indexed (384-d)",
+        "created_at": "2026-10-31T17:43:24.689Z"
+      },
+      {
+        "project_id": 5,
+        "title": "GraphDB-Scale: Distributed Graph Processing Engine for Citation Networks",
+        "status": "Approved",
+        "student_name": "Aayaan S",
+        "student_email": "aayaan@researchx.edu",
+        "domains": "Cloud & Distributed Systems, Database Systems & Vector Retrieval",
+        "reviewed_by_faculty": "Prof. Sandesh B J",
+        "review_decision": "Approved",
+        "review_comments": "Partitioning scheme looks mathematically sound. Approved.",
+        "vector_status": "Indexed (384-d)",
+        "created_at": "2026-10-31T17:43:24.689Z"
+      },
+      {
+        "project_id": 6,
+        "title": "CodeSummarizer: Neural Code Understanding and Documentation Generation",
+        "status": "Rejected",
+        "student_name": "Priya Kulkarni",
+        "student_email": "priya@researchx.edu",
+        "domains": "Artificial Intelligence & Machine Learning, Natural Language Processing & LLMs",
+        "reviewed_by_faculty": "Prof. Sandesh B J",
+        "review_decision": "Rejected",
+        "review_comments": "Insufficient novelty in code docstring synthesis. Expand to multi-language translation.",
+        "vector_status": "Indexed (384-d)",
+        "created_at": "2026-10-31T17:43:24.689Z"
+      }
+    ]
+  }
+]

@@ -1,11 +1,13 @@
 'use client';
 
+import { useAuth } from '@/components/AuthProvider';
 import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Search, Sparkles, BookOpen, AlertCircle, CheckCircle2, Compass } from 'lucide-react';
 import PaperCard, { OpenAlexPaperItem } from '@/components/PaperCard';
 
 function DiscoverContent() {
+  const { user } = useAuth();
   const searchParams = useSearchParams();
   const urlQuery = searchParams.get('q') || '';
 
@@ -57,6 +59,7 @@ function DiscoverContent() {
   }, [searchParams]);
 
   async function handleSavePaper(paper: OpenAlexPaperItem) {
+    if (!user) { setNotification({ message: 'Log in to save papers to the shared library.', type: 'error' }); return; }
     setSavingId(paper.openalex_id || paper.title);
     setNotification(null);
 

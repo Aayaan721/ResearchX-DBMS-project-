@@ -1,3 +1,5 @@
+import { requireUser } from '@/lib/auth';
+import { fail, readBody, textField, HttpError } from '@/lib/http';
 import { NextRequest, NextResponse } from 'next/server';
 import { pool } from '@/lib/db';
 import { generateEmbedding, formatVectorForPg } from '@/lib/embeddings';
@@ -23,14 +25,16 @@ interface SavePaperRequestBody {
 }
 
 export async function POST(request: NextRequest) {
-  const client = await pool.connect();
+  let client;
   try {
-    const body: SavePaperRequestBody = await request.json();
+    await requireUser(request);
+    client = await pool.connect();
+    const body = await readBody(request);
 
-    let title = body.title?.trim() || '';
-    let openalex_id = body.openalex_id?.trim() || null;
-    let abstract = body.abstract || null;
-    let doi = body.doi?.trim() || null;
+    let title = textField(body.title, 'Paper title', 1, 500);
+    let openalex_id = body.openalex_id == null ? null : textField(body.openalex_id, 'OpenAlex ID', 1, 100);
+    let abstract = body.abstract == null ? null : textField(body.abstract, 'Abstract', 0, 30000);
+    let doi = body.doi == null ? null : textField(body.doi, 'DOI', 1, 255);
     let doi_url = body.doi_url || null;
     let pdf_url = body.pdf_url || null;
     let publication_year = body.publication_year ? parseInt(String(body.publication_year), 10) : null;
@@ -39,21 +43,42 @@ export async function POST(request: NextRequest) {
     let authors = body.authors || [];
     let keywords = body.keywords || [];
 
+    if (body.authors !== undefined && (!Array.isArray(body.authors) || body.authors.length > 500)) throw new HttpError(400, 'Invalid authors');
+    for (const a of authors) {
+      if (!a || typeof a !== 'object') throw new HttpError(400, 'Invalid author');
+      textField(a.display_name || a.name, 'Author name', 1, 150);
+      if (a.id != null) textField(a.id, 'Author ID', 1, 150);
+      if (a.affiliation != null) textField(a.affiliation, 'Affiliation', 0, 255);
+    }
+    for (const value of [body.doi_url, body.pdf_url]) {
+      if (value != null) {
+        textField(value, 'Paper URL', 1, 500);
+        let url: URL; try { url = new URL(value); } catch { throw new HttpError(400, 'Invalid paper URL'); }
+        if (!['http:', 'https:'].includes(url.protocol)) throw new HttpError(400, 'Invalid paper URL');
+      }
+    }
+    if (host_venue != null) textField(host_venue, 'Venue', 0, 255);
+    if (body.publication_year != null && (!/^\d{4}$/.test(String(body.publication_year)) || publication_year < 1000 || publication_year > 2100)) throw new HttpError(400, 'Invalid publication year');
+    if (body.cited_by_count != null && (!Number.isInteger(Number(body.cited_by_count)) || Number(body.cited_by_count) < 0 || Number(body.cited_by_count) > 2147483647)) throw new HttpError(400, 'Invalid citation count');
+    if (body.keywords !== undefined && !Array.isArray(body.keywords) && typeof body.keywords !== 'string') throw new HttpError(400, 'Invalid keywords');
+    if (Array.isArray(keywords)) { if (keywords.length > 100) throw new HttpError(400, 'Too many keywords'); keywords.forEach(k => textField(k, 'Keyword', 1, 200)); }
+    else textField(keywords, 'Keywords', 0, 20000);
+
     // Canonical server-side validation using OpenAlex API if openalex_id is provided
     if (openalex_id) {
       try {
         const canonical = await getCanonicalWork(openalex_id);
         if (canonical) {
-          title = canonical.title;
+          title = canonical.title.slice(0, 500);
           abstract = abstract || canonical.abstract;
           doi = canonical.doi || doi;
           doi_url = canonical.doi_url || doi_url;
           pdf_url = canonical.pdf_url || pdf_url;
           publication_year = canonical.publication_year || publication_year;
-          host_venue = canonical.host_venue || host_venue;
+          host_venue = canonical.host_venue?.slice(0, 255) || host_venue;
           cited_by_count = canonical.cited_by_count ?? cited_by_count;
           if (canonical.authors && canonical.authors.length > 0) {
-            authors = canonical.authors;
+            authors = canonical.authors.map(a => ({ ...a, display_name: a.display_name.slice(0, 150), affiliation: a.affiliation?.slice(0, 255) }));
           }
           if (canonical.keywords && canonical.keywords.length > 0) {
             keywords = canonical.keywords;
@@ -195,13 +220,10 @@ export async function POST(request: NextRequest) {
       { status: 201 }
     );
   } catch (error: any) {
-    await client.query('ROLLBACK');
+    if (client) await client.query('ROLLBACK');
     console.error('Error saving paper:', error);
-    return NextResponse.json(
-      { error: error.message || 'Failed to save paper to database' },
-      { status: 500 }
-    );
+    return fail(error);
   } finally {
-    client.release();
+    client?.release();
   }
 }

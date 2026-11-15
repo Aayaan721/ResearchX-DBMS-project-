@@ -1,16 +1,18 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useAuth } from '@/components/AuthProvider';
+import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { BookOpen, Search, Sparkles, ExternalLink, Trash2, BookmarkCheck, ArrowRight } from 'lucide-react';
 
 export default function SavedPapersPage() {
+  const { user } = useAuth();
   const [papers, setPapers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [notification, setNotification] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
 
-  async function loadPapers() {
+  const loadPapers = useCallback(async () => {
     setLoading(true);
     try {
       const q = search.trim() ? `?search=${encodeURIComponent(search.trim())}` : '';
@@ -24,14 +26,14 @@ export default function SavedPapersPage() {
     } finally {
       setLoading(false);
     }
-  }
+  }, [search]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
       loadPapers();
     }, 200);
     return () => clearTimeout(timer);
-  }, [search]);
+  }, [loadPapers]);
 
   async function handleDelete(paperId: number, title: string) {
     const confirmed = window.confirm(
@@ -199,13 +201,13 @@ export default function SavedPapersPage() {
                     )}
                   </div>
 
-                  <button
+                  {user?.role_name === 'Admin' && <button
                     onClick={() => handleDelete(paper.paper_id, paper.title)}
                     className="p-1.5 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 transition-colors"
                     title="Delete Paper"
                   >
                     <Trash2 className="h-4 w-4" />
-                  </button>
+                  </button>}
                 </div>
               </div>
             );

@@ -1,0 +1,21 @@
+PASS migration reapplication is idempotent
+PASS DB rejects empty title
+PASS DB rejects spaces title
+PASS DB rejects whitespace title
+PASS DB rejects oversized title
+PASS DB rejects short problem
+PASS DB rejects blank problem
+PASS DB rejects invalid status
+PASS DB rejects invalid review decision
+PASS DB rejects invalid foreign key
+PASS DB rejects blank research-paper title
+PASS DB rejects orphan project embeddings
+PASS DB rejects orphan paper embeddings
+PASS DB rejects retargeting a vector to a missing parent
+PASS DB prevents parent-key changes that strand vectors
+PASS DB rejects negative citations
+PASS views agree with base relations
+PASS real vectors and HNSW cosine index are present
+PASS timestamp, audit triggers and stored review procedure execute atomically
+PASS CREATE, ALTER, DROP and temporary relationship/view examples execute safely
+Database integrity: 20 passed, 0 failed

@@ -1,3 +1,5 @@
+import { requireUser } from '@/lib/auth';
+import { fail, positiveId, HttpError } from '@/lib/http';
 import { NextRequest, NextResponse } from 'next/server';
 import { query } from '@/lib/db';
 
@@ -6,7 +8,7 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    const paperId = parseInt(params.id, 10);
+    const paperId = positiveId(params.id);
     if (isNaN(paperId)) {
       return NextResponse.json({ error: 'Invalid paper ID' }, { status: 400 });
     }
@@ -30,7 +32,6 @@ export async function GET(
               'author_id', a.author_id,
               'name', a.name,
               'affiliation', a.affiliation,
-              'email', a.email,
               'order', pa.author_order
             ) ORDER BY pa.author_order ASC
           ) FILTER (WHERE a.author_id IS NOT NULL),
@@ -53,33 +54,16 @@ export async function GET(
     return NextResponse.json({ paper: paperRes.rows[0] });
   } catch (error: any) {
     console.error('Error fetching paper details:', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return fail(error);
   }
 }
 
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
   try {
-    const paperId = parseInt(params.id, 10);
-    if (isNaN(paperId)) {
-      return NextResponse.json({ error: 'Invalid paper ID' }, { status: 400 });
-    }
-
-    // Delete embedding reference
-    await query(`DELETE FROM embedding_ref WHERE entity_type = 'RESEARCH_PAPER' AND entity_id = $1`, [paperId]);
-
-    // Delete paper (cascade removes paper_author)
-    const res = await query(`DELETE FROM research_paper WHERE paper_id = $1 RETURNING paper_id, title`, [paperId]);
-
-    if (res.rows.length === 0) {
-      return NextResponse.json({ error: 'Paper not found' }, { status: 404 });
-    }
-
-    return NextResponse.json({ success: true, deleted: res.rows[0] });
-  } catch (error: any) {
-    console.error('Error deleting paper:', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
-  }
+    await requireUser(request, ['Admin']);
+    const paperId = positiveId(params.id);
+    const result = await query('DELETE FROM research_paper WHERE paper_id=$1 RETURNING paper_id,title', [paperId]);
+    if (!result.rows.length) throw new HttpError(404, 'Paper not found');
+    return NextResponse.json({ success: true, deleted: result.rows[0] });
+  } catch (error) { return fail(error); }
 }

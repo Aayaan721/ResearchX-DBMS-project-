@@ -1,0 +1,23 @@
+PASS invalid password and unknown account return identical generic errors
+PASS session cookie is HTTP-only, SameSite Lax, scoped and time-limited
+PASS only SHA256 token hashes are persisted
+PASS unauthenticated mutations and user directory are blocked
+PASS public discovery, catalogues and semantic search remain accessible
+PASS account directory is admin-only and excludes hashes
+PASS student cannot impersonate another creator or role
+PASS other students cannot update or delete this project
+PASS faculty cannot create, edit or delete student projects
+PASS student cannot escalate to faculty by forged review payload
+PASS faculty reviewer is always derived from session
+PASS owner can edit; creator and approval cannot be overwritten
+PASS invalid bodies and SQL-like identifiers are rejected without internal details
+PASS origin checks reject cross-site login and writes
+PASS shared paper deletion requires Admin
+PASS expired sessions cannot authenticate
+PASS logout revokes the server session and blocks replay
+PASS fabricated session cookies are rejected
+PASS Admin can maintain projects without impersonation
+PASS owner deletion cascades relational records and embeddings
+PASS login attempts are throttled persistently
+PASS password hashes use distinct salts and no dummy hashes remain
+Authentication: 22 passed, 0 failed

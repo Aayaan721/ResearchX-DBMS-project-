@@ -1,0 +1,12 @@
+PASS role: all 3 original rows unchanged; 3 rows now
+PASS app_user: all 5 original rows unchanged; 5 rows now
+PASS domain: all 6 original rows unchanged; 6 rows now
+PASS project: all 6 original rows unchanged; 6 rows now
+PASS project_domain: all 12 original rows unchanged; 12 rows now
+PASS research_paper: all 5 original rows unchanged; 5 rows now
+PASS author: all 16 original rows unchanged; 17 rows now
+PASS paper_author: all 8 original rows unchanged; 8 rows now
+PASS project_review: all 4 original rows unchanged; 4 rows now
+PASS audit_log: all 53 original rows unchanged; 74 rows now
+PASS embedding_ref: all 11 original rows unchanged; 11 rows now
+PASS all existing public index, trigger, function and procedure definitions unchanged

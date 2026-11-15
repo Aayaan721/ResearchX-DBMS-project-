@@ -1,5 +1,6 @@
 'use client';
 
+import { useAuth, LoginRequired } from '@/components/AuthProvider';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -7,33 +8,21 @@ import { PlusCircle, ArrowLeft, CheckCircle2, AlertCircle, FileText, UserCheck, 
 
 export default function NewProjectPage() {
   const router = useRouter();
+  const { user, loading: authLoading } = useAuth();
 
   const [title, setTitle] = useState('');
   const [problemStatement, setProblemStatement] = useState('');
   const [description, setDescription] = useState('');
-  const [studentId, setStudentId] = useState('');
   const [selectedDomains, setSelectedDomains] = useState<number[]>([]);
   
   const [domains, setDomains] = useState<Array<{ domain_id: number; domain_name: string }>>([]);
-  const [students, setStudents] = useState<Array<{ user_id: number; full_name: string; username: string; email: string }>>([]);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [successInfo, setSuccessInfo] = useState<any>(null);
 
   useEffect(() => {
-    Promise.all([
-      fetch('/api/domains').then((r) => r.json()),
-      fetch('/api/users').then((r) => r.json()),
-    ])
-      .then(([domainsData, usersData]) => {
-        setDomains(domainsData.domains || []);
-        const stdList = usersData.students || [];
-        setStudents(stdList);
-        if (stdList.length > 0) {
-          setStudentId(String(stdList[0].user_id));
-        }
-      })
-      .catch((err) => console.error('Failed to load form options:', err));
+    fetch('/api/domains').then(r => r.json()).then(data => setDomains(data.domains || []))
+      .catch(() => setError('Unable to load research domains'));
   }, []);
 
   function handleDomainToggle(domainId: number) {
@@ -52,7 +41,7 @@ export default function NewProjectPage() {
       if (title.trim().length > 255) throw new Error('Title must not exceed 255 characters');
       if (!problemStatement.trim()) throw new Error('Please describe the problem statement');
       if (problemStatement.trim().length < 10) throw new Error('Problem statement must be at least 10 characters long');
-      if (!studentId) throw new Error('Please select a student author');
+
 
       const res = await fetch('/api/projects', {
         method: 'POST',
@@ -61,7 +50,6 @@ export default function NewProjectPage() {
           title,
           problem_statement: problemStatement,
           description,
-          student_id: parseInt(studentId, 10),
           domain_ids: selectedDomains,
         }),
       });
@@ -81,6 +69,9 @@ export default function NewProjectPage() {
     }
   }
 
+  if (authLoading) return <p>Checking session…</p>;
+  if (!user) return <LoginRequired />;
+  if (!['Student', 'Admin'].includes(user.role_name)) return <p>Only students and administrators can submit projects.</p>;
   return (
     <div className="max-w-3xl mx-auto space-y-6">
       {/* Breadcrumb Navigation */}
@@ -185,17 +176,7 @@ export default function NewProjectPage() {
               <label className="block text-xs font-semibold text-slate-300 mb-1.5">
                 Student Lead / Contributor <span className="text-rose-400">*</span>
               </label>
-              <select
-                value={studentId}
-                onChange={(e) => setStudentId(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl bg-slate-950/80 border border-slate-700/80 text-sm text-slate-200 focus:outline-none focus:border-cyan-500 transition-colors"
-              >
-                {students.map((s) => (
-                  <option key={s.user_id} value={s.user_id}>
-                    {s.full_name} ({s.username}) — {s.email}
-                  </option>
-                ))}
-              </select>
+              <p className="text-sm text-cyan-300">{user?.full_name} ({user?.role_name})</p>
             </div>
 
             <div>

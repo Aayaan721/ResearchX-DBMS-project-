@@ -1,12 +1,14 @@
 'use client';
 
-import { useState, useEffect, Suspense } from 'react';
+import { useAuth } from '@/components/AuthProvider';
+import { useState, useEffect, useCallback, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { Search, PlusCircle, Filter, FolderGit2, CheckCircle2, Clock, XCircle } from 'lucide-react';
 import ProjectCard, { ProjectData } from '@/components/ProjectCard';
 
 function ProjectsContent() {
+  const { user } = useAuth();
   const searchParams = useSearchParams();
   const initialDomain = searchParams.get('domainId') || '';
 
@@ -25,7 +27,7 @@ function ProjectsContent() {
       .catch((err) => console.error(err));
   }, []);
 
-  async function fetchProjects() {
+  const fetchProjects = useCallback(async () => {
     setLoading(true);
     try {
       const params = new URLSearchParams();
@@ -43,14 +45,14 @@ function ProjectsContent() {
     } finally {
       setLoading(false);
     }
-  }
+  }, [search, selectedDomain, selectedStatus]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
       fetchProjects();
     }, 200);
     return () => clearTimeout(timer);
-  }, [search, selectedDomain, selectedStatus]);
+  }, [fetchProjects]);
 
   async function handleDelete(projectId: number) {
     try {
@@ -188,7 +190,7 @@ function ProjectsContent() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           {projects.map((p) => (
-            <ProjectCard key={p.project_id} project={p} onDelete={handleDelete} />
+            <ProjectCard key={p.project_id} project={p} onDelete={user && (user.role_name === 'Admin' || (user.role_name === 'Student' && user.user_id === p.student_id)) ? handleDelete : undefined} />
           ))}
         </div>
       )}

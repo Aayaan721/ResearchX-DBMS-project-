@@ -1,3 +1,7 @@
+import { authenticatedFetch } from './test_helpers.mjs';
+const memberFetch = await authenticatedFetch('Student');
+const facultyFetch = await authenticatedFetch('Faculty');
+const adminFetch = await authenticatedFetch('Admin');
 // scripts/test_platform.mjs
 import assert from 'assert';
 
@@ -29,7 +33,7 @@ async function runTests() {
 
   // 1. Stats API
   await test('GET /api/stats (Platform statistics & domains)', async () => {
-    const res = await fetch(`${BASE_URL}/api/stats`);
+    const res = await memberFetch(`${BASE_URL}/api/stats`);
     assert.strictEqual(res.status, 200);
     const data = await res.json();
     assert.ok(data.stats, 'Stats object present');
@@ -40,7 +44,7 @@ async function runTests() {
 
   // 2. Users API
   await test('GET /api/users (Demo students and faculty)', async () => {
-    const res = await fetch(`${BASE_URL}/api/users`);
+    const res = await adminFetch(`${BASE_URL}/api/users`);
     assert.strictEqual(res.status, 200);
     const data = await res.json();
     assert.ok(data.students.length >= 2, 'Students loaded');
@@ -49,7 +53,7 @@ async function runTests() {
 
   // 3. Domains API
   await test('GET /api/domains (Research taxonomy)', async () => {
-    const res = await fetch(`${BASE_URL}/api/domains`);
+    const res = await memberFetch(`${BASE_URL}/api/domains`);
     assert.strictEqual(res.status, 200);
     const data = await res.json();
     assert.ok(data.domains.length >= 6, 'All domains loaded');
@@ -57,7 +61,7 @@ async function runTests() {
 
   // 4. Projects List API
   await test('GET /api/projects (Filter and list)', async () => {
-    const res = await fetch(`${BASE_URL}/api/projects?status=Approved`);
+    const res = await memberFetch(`${BASE_URL}/api/projects?status=Approved`);
     assert.strictEqual(res.status, 200);
     const data = await res.json();
     assert.ok(Array.isArray(data.projects));
@@ -73,7 +77,7 @@ async function runTests() {
       student_id: 2,
       domain_ids: [1, 3],
     };
-    const res = await fetch(`${BASE_URL}/api/projects`, {
+    const res = await memberFetch(`${BASE_URL}/api/projects`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
@@ -88,7 +92,7 @@ async function runTests() {
   // 6. Project Details & Audit Trail
   await test(`GET /api/projects/:id (Fetch created project & trigger audit)`, async () => {
     assert.ok(createdProjectId, 'Created project ID required');
-    const res = await fetch(`${BASE_URL}/api/projects/${createdProjectId}`);
+    const res = await memberFetch(`${BASE_URL}/api/projects/${createdProjectId}`);
     assert.strictEqual(res.status, 200);
     const data = await res.json();
     assert.strictEqual(data.project.title, 'AutoIndex: Dynamic Vector Clustering for Multi-Tenant Databases');
@@ -99,7 +103,7 @@ async function runTests() {
   // 7. Stored Procedure sp_review_and_approve_project
   await test(`POST /api/projects/:id/review (Execute sp_review_and_approve_project)`, async () => {
     assert.ok(createdProjectId, 'Created project ID required');
-    const res = await fetch(`${BASE_URL}/api/projects/${createdProjectId}/review`, {
+    const res = await facultyFetch(`${BASE_URL}/api/projects/${createdProjectId}/review`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -117,7 +121,7 @@ async function runTests() {
 
   // 8. OpenAlex Live API Search
   await test('GET /api/openalex/search (Query real OpenAlex academic works)', async () => {
-    const res = await fetch(`${BASE_URL}/api/openalex/search?q=hnsw+vector+similarity&limit=3`);
+    const res = await memberFetch(`${BASE_URL}/api/openalex/search?q=hnsw+vector+similarity&limit=3`);
     assert.strictEqual(res.status, 200);
     const data = await res.json();
     assert.ok(Array.isArray(data.results));
@@ -144,7 +148,7 @@ async function runTests() {
       keywords: ['metric space', 'nearest neighbor', 'pgvector']
     };
 
-    const res = await fetch(`${BASE_URL}/api/openalex/save`, {
+    const res = await memberFetch(`${BASE_URL}/api/openalex/save`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(paperPayload),
@@ -158,7 +162,7 @@ async function runTests() {
 
   // 10. Saved Papers List API
   await test('GET /api/papers (Verify saved paper in PostgreSQL)', async () => {
-    const res = await fetch(`${BASE_URL}/api/papers?search=Scalable+Nearest+Neighbor`);
+    const res = await memberFetch(`${BASE_URL}/api/papers?search=Scalable+Nearest+Neighbor`);
     assert.strictEqual(res.status, 200);
     const data = await res.json();
     assert.ok(data.papers.length >= 1, 'Saved paper retrieved');
@@ -167,7 +171,7 @@ async function runTests() {
 
   // 11. Semantic Vector Similarity Search (pgvector cosine search)
   await test('POST /api/similarity (Run real pgvector cosine distance search)', async () => {
-    const res = await fetch(`${BASE_URL}/api/similarity`, {
+    const res = await memberFetch(`${BASE_URL}/api/similarity`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -186,7 +190,7 @@ async function runTests() {
   // 12. Delete Test Project and Paper
   await test('DELETE /api/projects/:id (Clean up test project & check CASCADE)', async () => {
     assert.ok(createdProjectId);
-    const res = await fetch(`${BASE_URL}/api/projects/${createdProjectId}`, { method: 'DELETE' });
+    const res = await memberFetch(`${BASE_URL}/api/projects/${createdProjectId}`, { method: 'DELETE' });
     assert.strictEqual(res.status, 200);
     const data = await res.json();
     assert.strictEqual(data.success, true);
@@ -194,7 +198,7 @@ async function runTests() {
 
   if (savedPaperId) {
     await test('DELETE /api/papers/:id (Clean up test paper)', async () => {
-      const res = await fetch(`${BASE_URL}/api/papers/${savedPaperId}`, { method: 'DELETE' });
+      const res = await adminFetch(`${BASE_URL}/api/papers/${savedPaperId}`, { method: 'DELETE' });
       assert.strictEqual(res.status, 200);
     });
   }

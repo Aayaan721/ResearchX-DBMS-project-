@@ -1,0 +1,21 @@
+--- Test 1: Direct Navigation to /discover ---
+  Input value: ""
+  Placeholder: "Search research papers by topic, title, or keyword..."
+  [PASS] Direct navigation to /discover verified.
+
+--- Test 2: Homepage-Initiated Search to /discover ---
+  Populated Input value: "deep residual learning"
+  [PASS] Homepage-initiated search to /discover verified.
+
+--- Test 3: Direct Navigation to /similarity ---
+  Textarea value: ""
+  Placeholder: "Describe your research idea or problem statement..."
+  [PASS] Direct navigation to /similarity verified.
+
+--- Test 4: Homepage-Initiated Search to /similarity ---
+  Populated Textarea value: "neural graph collaborative filtering"
+  [PASS] Homepage-initiated search to /similarity verified.
+
+==================================================
+ ALL TARGETED UI TESTS PASSED SUCCESSFULLY! [OK]
+==================================================

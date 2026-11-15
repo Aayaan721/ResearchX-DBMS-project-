@@ -1,0 +1,131 @@
+{
+  "first": [
+    {
+      "project_id": 1,
+      "title": "ResearchX: Intelligent Research Discovery & Project Similarity Platform",
+      "problem_statement": "Updated: Scaling dense vector embeddings for low-latency similarity search across millions of student research repositories using HNSW graphs.",
+      "status": "Approved",
+      "student_name": "Aayaan S",
+      "domains": "Artificial Intelligence & Machine Learning, Database Systems & Vector Retrieval",
+      "similarity_score": "1.0000"
+    },
+    {
+      "project_id": 5,
+      "title": "GraphDB-Scale: Distributed Graph Processing Engine for Citation Networks",
+      "problem_statement": "Graph traversal algorithms on billion-edge citation networks suffer from high network shuffle overhead and memory exhaustion on single-node servers.",
+      "status": "Approved",
+      "student_name": "Aayaan S",
+      "domains": "Cloud & Distributed Systems, Database Systems & Vector Retrieval",
+      "similarity_score": "0.4339"
+    },
+    {
+      "project_id": 2,
+      "title": "BioMedQA: Clinical Question Answering Using Dense Passage Retrieval",
+      "problem_statement": "Clinical clinicians require instant, evidence-backed answers from vast biomedical literature where traditional lexical search fails on synonyms and medical acronyms.",
+      "status": "Approved",
+      "student_name": "Priya Kulkarni",
+      "domains": "Artificial Intelligence & Machine Learning, Natural Language Processing & LLMs",
+      "similarity_score": "0.3275"
+    },
+    {
+      "project_id": 6,
+      "title": "CodeSummarizer: Neural Code Understanding and Documentation Generation",
+      "problem_statement": "Developers spend excessive time comprehending legacy codebases that lack up-to-date documentation and functional summaries.",
+      "status": "Rejected",
+      "student_name": "Priya Kulkarni",
+      "domains": "Artificial Intelligence & Machine Learning, Natural Language Processing & LLMs",
+      "similarity_score": "0.1861"
+    },
+    {
+      "project_id": 4,
+      "title": "PrivacyGuard: Differential Privacy in Collaborative Federated Learning",
+      "problem_statement": "Distributed model training across healthcare institutions risks leakage of sensitive patient records through gradient inversion attacks.",
+      "status": "Pending",
+      "student_name": "Priya Kulkarni",
+      "domains": "Artificial Intelligence & Machine Learning, Cybersecurity & Data Privacy",
+      "similarity_score": "0.1313"
+    }
+  ],
+  "second": [
+    {
+      "entity_type": "PROJECT",
+      "entity_id": 5,
+      "title": "GraphDB-Scale: Distributed Graph Processing Engine for Citation Networks",
+      "summary": "Graph traversal algorithms on billion-edge citation networks suffer from high network shuffle overhead and memory exhaustion on single-node servers.",
+      "similarity_score": "0.4339",
+      "status_or_published": "Approved"
+    },
+    {
+      "entity_type": "RESEARCH_PAPER",
+      "entity_id": 3,
+      "title": "Efficient and Robust Approximate Nearest Neighbor Search Using Hierarchical Navigable Small World Graphs",
+      "summary": "Approximate nearest neighbor search on high-dimensional vectors is crucial for modern similarity search. We present the Hierarchical Navigable Small World (HNSW) graph technique, which provides logarithmic scaling search complexity and high robustness across diverse distance metrics.",
+      "similarity_score": "0.3781",
+      "status_or_published": "IEEE TPAMI"
+    },
+    {
+      "entity_type": "PROJECT",
+      "entity_id": 2,
+      "title": "BioMedQA: Clinical Question Answering Using Dense Passage Retrieval",
+      "summary": "Clinical clinicians require instant, evidence-backed answers from vast biomedical literature where traditional lexical search fails on synonyms and medical acronyms.",
+      "similarity_score": "0.3275",
+      "status_or_published": "Approved"
+    },
+    {
+      "entity_type": "RESEARCH_PAPER",
+      "entity_id": 1,
+      "title": "Sentence-BERT: Sentence Embeddings using Siamese BERT-Networks",
+      "summary": "BERT and RoBERTa have set state-of-the-art performance on NLP tasks but require excessive inference time. We present Sentence-BERT (SBERT), a modification of the pretrained BERT network that uses siamese and triplet network structures to derive semantically meaningful sentence embeddings that can be compared using cosine similarity.",
+      "similarity_score": "0.3266",
+      "status_or_published": "EMNLP 2019"
+    },
+    {
+      "entity_type": "RESEARCH_PAPER",
+      "entity_id": 2,
+      "title": "Dense Passage Retrieval for Open-Domain Question Answering",
+      "summary": "Open-domain question answering relies on efficient passage retrieval to select candidate contexts. We show that retrieval can be practically implemented using dense representations, where embeddings are learned from a small number of passages using a simple dual-encoder framework.",
+      "similarity_score": "0.3087",
+      "status_or_published": "EMNLP 2020"
+    },
+    {
+      "entity_type": "PROJECT",
+      "entity_id": 6,
+      "title": "CodeSummarizer: Neural Code Understanding and Documentation Generation",
+      "summary": "Developers spend excessive time comprehending legacy codebases that lack up-to-date documentation and functional summaries.",
+      "similarity_score": "0.1861",
+      "status_or_published": "Rejected"
+    },
+    {
+      "entity_type": "RESEARCH_PAPER",
+      "entity_id": 4,
+      "title": "Federated Learning: Challenges, Methods, and Future Directions",
+      "summary": "Federated learning enables distributed edge devices to collaboratively train a shared prediction model while keeping all training data local. We survey fundamental challenges, communication bottlenecks, and privacy-preserving techniques including differential privacy.",
+      "similarity_score": "0.1473",
+      "status_or_published": "IEEE Signal Processing"
+    },
+    {
+      "entity_type": "PROJECT",
+      "entity_id": 4,
+      "title": "PrivacyGuard: Differential Privacy in Collaborative Federated Learning",
+      "summary": "Distributed model training across healthcare institutions risks leakage of sensitive patient records through gradient inversion attacks.",
+      "similarity_score": "0.1313",
+      "status_or_published": "Pending"
+    },
+    {
+      "entity_type": "RESEARCH_PAPER",
+      "entity_id": 5,
+      "title": "Attention Is All You Need",
+      "summary": "The dominant sequence transduction models are based on complex recurrent or convolutional neural networks. We propose the Transformer, a model architecture eschewing recurrence and relying entirely on an attention mechanism to draw global dependencies between input and output.",
+      "similarity_score": "0.0267",
+      "status_or_published": "NeurIPS 2017"
+    },
+    {
+      "entity_type": "PROJECT",
+      "entity_id": 3,
+      "title": "EdgeVision: Low-Power Object Detection on Microcontrollers",
+      "summary": "Deploying real-time object detection models on edge devices is severely constrained by memory, battery life, and computational capacity.",
+      "similarity_score": "0.0132",
+      "status_or_published": "Pending"
+    }
+  ]
+}

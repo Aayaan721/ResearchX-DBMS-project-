@@ -1,3 +1,5 @@
+import { requireUser } from '@/lib/auth';
+import { fail, readBody, textField, positiveId, domainIds, HttpError } from '@/lib/http';
 import { NextRequest, NextResponse } from 'next/server';
 import { query, pool } from '@/lib/db';
 import { generateEmbedding, formatVectorForPg } from '@/lib/embeddings';
@@ -10,6 +12,8 @@ export async function GET(request: NextRequest) {
     const search = searchParams.get('search') || '';
     const domainId = searchParams.get('domainId');
     const status = searchParams.get('status');
+    if (search.length > 500) throw new HttpError(400, 'Search is too long');
+    if (status && !['All', 'Pending', 'Approved', 'Rejected'].includes(status)) throw new HttpError(400, 'Invalid status');
 
     let sql = `
       SELECT 
@@ -20,7 +24,7 @@ export async function GET(request: NextRequest) {
         p.status,
         p.student_id,
         u.full_name AS student_name,
-        u.email AS student_email,
+
         p.approved_by,
         u_rev.full_name AS reviewer_name,
         p.created_at,
@@ -49,7 +53,7 @@ export async function GET(request: NextRequest) {
     }
 
     if (domainId) {
-      params.push(parseInt(domainId, 10));
+      params.push(positiveId(domainId, 'domain ID'));
       sql += ` AND p.project_id IN (SELECT project_id FROM project_domain WHERE domain_id = $${params.length})`;
     }
 
@@ -67,36 +71,28 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ projects: result.rows });
   } catch (error: any) {
     console.error('Error fetching projects:', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return fail(error);
   }
 }
 
 export async function POST(request: NextRequest) {
-  const client = await pool.connect();
+  let client;
   try {
-    const body = await request.json();
-    const { title, problem_statement, description, student_id, domain_ids } = body;
+    const user = await requireUser(request, ['Student', 'Admin']);
+    const body = await readBody(request);
+    const title = textField(body.title, 'Project title', 1, 255);
+    const problem_statement = textField(body.problem_statement, 'Problem statement', 10, 10000);
+    const description = body.description == null ? '' : textField(body.description, 'Description', 0, 20000);
+    const domain_ids = domainIds(body.domain_ids);
 
-    // Validation
-    if (!title || typeof title !== 'string' || !title.trim()) {
-      return NextResponse.json({ error: 'Project title is required' }, { status: 400 });
-    }
-    if (title.trim().length > 255) {
-      return NextResponse.json({ error: 'Project title must not exceed 255 characters' }, { status: 400 });
-    }
-    if (!problem_statement || typeof problem_statement !== 'string' || problem_statement.trim().length < 10) {
-      return NextResponse.json({ error: 'Problem statement must be at least 10 characters long' }, { status: 400 });
-    }
-    const studentIdNum = parseInt(String(student_id), 10);
-    if (!studentIdNum || isNaN(studentIdNum)) {
-      return NextResponse.json({ error: 'A valid student author is required' }, { status: 400 });
-    }
+    const studentIdNum = user.user_id;
 
     // 1. Generate 384-dimensional dense vector BEFORE transaction commit
     const textToEmbed = `${title.trim()}. ${problem_statement.trim()}. ${(description || '').trim()}`;
     const rawVector = await generateEmbedding(textToEmbed);
     const vectorStr = formatVectorForPg(rawVector);
 
+    client = await pool.connect();
     await client.query('BEGIN');
 
     // 2. Insert Project
@@ -143,10 +139,10 @@ export async function POST(request: NextRequest) {
       { status: 201 }
     );
   } catch (error: any) {
-    await client.query('ROLLBACK');
+    if (client) await client.query('ROLLBACK');
     console.error('Error creating project:', error);
-    return NextResponse.json({ error: error.message || 'Failed to create project' }, { status: 500 });
+    return fail(error);
   } finally {
-    client.release();
+    client?.release();
   }
 }

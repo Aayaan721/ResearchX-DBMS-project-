@@ -1,3 +1,4 @@
+import { fail, HttpError } from '@/lib/http';
 import { NextRequest, NextResponse } from 'next/server';
 import { query } from '@/lib/db';
 
@@ -7,6 +8,7 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const search = searchParams.get('search') || '';
+    if (search.length > 500) throw new HttpError(400, 'Search is too long');
 
     let sql = `
       SELECT 
@@ -55,6 +57,6 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ papers: result.rows });
   } catch (error: any) {
     console.error('Error fetching papers:', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return fail(error);
   }
 }

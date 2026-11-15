@@ -1,13 +1,18 @@
+import { canViewProjectAudit } from '@/lib/audit-permissions';
+import { currentUser, requireUser } from '@/lib/auth';
+import { fail, readBody, textField, positiveId, domainIds, HttpError } from '@/lib/http';
 import { NextRequest, NextResponse } from 'next/server';
 import { query, pool } from '@/lib/db';
 import { generateEmbedding, formatVectorForPg } from '@/lib/embeddings';
+
+export const dynamic = 'force-dynamic';
 
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
-    const projectId = parseInt(params.id, 10);
+    const projectId = positiveId(params.id);
     if (isNaN(projectId)) {
       return NextResponse.json({ error: 'Invalid project ID' }, { status: 400 });
     }
@@ -21,7 +26,7 @@ export async function GET(
         p.status,
         p.student_id,
         u.full_name AS student_name,
-        u.email AS student_email,
+
         p.approved_by,
         u_rev.full_name AS reviewer_name,
         p.created_at,
@@ -57,8 +62,7 @@ export async function GET(
         pr.decision,
         pr.comments,
         pr.review_date,
-        u.full_name AS faculty_name,
-        u.email AS faculty_email
+        u.full_name AS faculty_name
       FROM project_review pr
       JOIN app_user u ON pr.faculty_id = u.user_id
       WHERE pr.project_id = $1
@@ -66,23 +70,25 @@ export async function GET(
       [projectId]
     );
 
-    // Fetch audit history for this project
-    const auditRes = await query(
+    // Historical snapshots can include data no longer present in the public project.
+    const canViewAudit = canViewProjectAudit(await currentUser(), project.student_id);
+    const auditRes = canViewAudit ? await query(
       `SELECT log_id, action, old_values, new_values, changed_at
        FROM audit_log
        WHERE table_name = 'project' AND record_id = $1
        ORDER BY changed_at DESC`,
       [projectId]
-    );
+    ) : { rows: [] };
 
     return NextResponse.json({
       project,
       reviews: reviewsRes.rows,
       auditHistory: auditRes.rows,
-    });
+      canViewAudit,
+    }, { headers: { 'Cache-Control': 'private, no-store', Vary: 'Cookie' } });
   } catch (error: any) {
     console.error('Error fetching project:', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return fail(error);
   }
 }
 
@@ -90,15 +96,22 @@ export async function PUT(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
-  const client = await pool.connect();
+  let client;
   try {
-    const projectId = parseInt(params.id, 10);
+    const user = await requireUser(request, ['Student', 'Admin']);
+    const projectId = positiveId(params.id);
     if (isNaN(projectId)) {
       return NextResponse.json({ error: 'Invalid project ID' }, { status: 400 });
     }
 
-    const body = await request.json();
-    const { title, problem_statement, description, domain_ids } = body;
+    const body = await readBody(request);
+    const title = textField(body.title, 'Project title', 1, 255);
+    const problem_statement = textField(body.problem_statement, 'Problem statement', 10, 10000);
+    const description = body.description == null ? '' : textField(body.description, 'Description', 0, 20000);
+    const domain_ids = domainIds(body.domain_ids);
+    const owner = await query('SELECT student_id FROM project WHERE project_id=$1', [projectId]);
+    if (!owner.rows.length) throw new HttpError(404, 'Project not found');
+    if (user.role_name !== 'Admin' && owner.rows[0].student_id !== user.user_id) throw new HttpError(403, 'You can modify only your own projects');
 
     if (!title || !title.trim()) {
       return NextResponse.json({ error: 'Project title cannot be empty' }, { status: 400 });
@@ -112,6 +125,7 @@ export async function PUT(
     const rawVector = await generateEmbedding(textToEmbed);
     const vectorStr = formatVectorForPg(rawVector);
 
+    client = await pool.connect();
     await client.query('BEGIN');
 
     const updateRes = await client.query(
@@ -123,7 +137,7 @@ export async function PUT(
     );
 
     if (updateRes.rows.length === 0) {
-      await client.query('ROLLBACK');
+      if (client) await client.query('ROLLBACK');
       return NextResponse.json({ error: 'Project not found' }, { status: 404 });
     }
 
@@ -155,37 +169,24 @@ export async function PUT(
 
     return NextResponse.json({ project: updateRes.rows[0], success: true });
   } catch (error: any) {
-    await client.query('ROLLBACK');
+    if (client) await client.query('ROLLBACK');
     console.error('Error updating project:', error);
-    return NextResponse.json({ error: error.message || 'Failed to update project' }, { status: 500 });
+    return fail(error);
   } finally {
-    client.release();
+    client?.release();
   }
 }
 
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
   try {
-    const projectId = parseInt(params.id, 10);
-    if (isNaN(projectId)) {
-      return NextResponse.json({ error: 'Invalid project ID' }, { status: 400 });
-    }
-
-    // Delete embedding reference explicitly if any
-    await query(`DELETE FROM embedding_ref WHERE entity_type = 'PROJECT' AND entity_id = $1`, [projectId]);
-
-    // Delete project (cascade handles project_domain, project_review; trigger logs DELETE)
-    const res = await query(`DELETE FROM project WHERE project_id = $1 RETURNING project_id, title`, [projectId]);
-
-    if (res.rows.length === 0) {
-      return NextResponse.json({ error: 'Project not found or already deleted' }, { status: 404 });
-    }
-
-    return NextResponse.json({ success: true, deleted: res.rows[0] });
-  } catch (error: any) {
-    console.error('Error deleting project:', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
-  }
+    const user = await requireUser(request, ['Student', 'Admin']);
+    const projectId = positiveId(params.id);
+    // One atomic DELETE; database cascades remove mappings, reviews and vectors.
+    const owner = await query('SELECT student_id FROM project WHERE project_id=$1', [projectId]);
+    if (!owner.rows.length) throw new HttpError(404, 'Project not found');
+    if (user.role_name !== 'Admin' && owner.rows[0].student_id !== user.user_id) throw new HttpError(403, 'You can delete only your own projects');
+    const result = await query(`DELETE FROM project WHERE project_id=$1 AND (student_id=$2 OR $3::boolean) RETURNING project_id,title`, [projectId,user.user_id,user.role_name==='Admin']);
+    if (!result.rows.length) throw new HttpError(404, 'Project not found');
+    return NextResponse.json({ success: true, deleted: result.rows[0] });
+  } catch (error) { return fail(error); }
 }

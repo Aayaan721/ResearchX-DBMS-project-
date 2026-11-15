@@ -1,0 +1,15 @@
+PASS anonymous: public project and reviews remain readable; audit history follows permission
+PASS anonymous: statistics remain public; only Admin receives the global audit feed
+PASS owner: public project and reviews remain readable; audit history follows permission
+PASS owner: statistics remain public; only Admin receives the global audit feed
+PASS other Student: public project and reviews remain readable; audit history follows permission
+PASS other Student: statistics remain public; only Admin receives the global audit feed
+PASS Faculty: public project and reviews remain readable; audit history follows permission
+PASS Faculty: statistics remain public; only Admin receives the global audit feed
+PASS Admin: public project and reviews remain readable; audit history follows permission
+PASS Admin: statistics remain public; only Admin receives the global audit feed
+PASS fabricated cookies cannot authorize either audit feed
+PASS expired session cannot read project history or global feed
+PASS logout invalidates history access without making project browsing private
+PASS deleted-project snapshots stay out of non-Admin statistics
+Audit access: 14 passed, 0 failed
